@@ -1,19 +1,25 @@
 <script lang="ts">
   import * as Breadcrumb from "$lib/components/ui/breadcrumb/index.js";
   import {page} from '$app/stores';
+	import { UserServices, paths } from "$lib/constants";
+
   type Crumb = {
     label : string,
     href : string
   };
+
   let crumbs: Crumb[] = [];
   $: {
     const urls:string[] = $page.url.pathname.split('/')
       .filter((url) => url !== '');
     let tokenPath: string = "";
+
     crumbs = urls.map((url) => {
       tokenPath = "/" + url;
       return {
-        label : url.charAt(0).toUpperCase() + url.slice(1),
+        label : url.replace(/\w+/g, (match) => match.charAt(0).toUpperCase() + match.slice(1))
+          .split('-')
+          .join(' '),
         href : tokenPath
       };
     })
@@ -43,7 +49,7 @@
   </div>
   <div class="flex flex-1 justify-between space-x-2 md:justify-end">
     <nav class="flex items-center gap-6">
-      <a href=link >Some Link</a>
+      <a href={paths.module_manager.name} >Some Link</a>
       <a href=link >Some Link</a>
       <a href=link >Some Link</a>
       <a href=link >Some Link</a>
