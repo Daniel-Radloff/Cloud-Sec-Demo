@@ -1,5 +1,15 @@
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /{doucment=**} {
+      allow read,write,delete: if false;
+    }
+    match /adminUsers/{userId} {
+      allow read,write,delete: if request.auth != null && 
+        request.auth.token.isSuper == true &&
+        request.resourece.data.keys() == ['name', 'email', 'privilage'] &&
+        request.resource.data.privilage in ['admin','superuser'];
+
+    }
     match /{document=**} {
       // This rule allows anyone with your database reference to view, edit,
       // and delete all data in your database. It is useful for getting
