@@ -1,4 +1,4 @@
-import type { ServiceCardData } from "./types";
+import type { ServiceCardData } from "../../../../shared/src/types";
 import ManageModulesIcon from "$lib/assets/bank-svgrepo-com.svg";
 import ViewTimetableIcon from "$lib/assets/calendar-svgrepo-com.svg";
 export const paths = {
