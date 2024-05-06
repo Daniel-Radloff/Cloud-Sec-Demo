@@ -1,4 +1,4 @@
-import {initializeApp} from "firebase-admin";
+import * as firebase from "firebase-admin";
 import {adminUserCollectionUpdateHook} from "./adminuser-hooks/adminuser-hooks";
 import {metadataSignupHook} from "./metadata-hooks/metadata-hooks";
 
@@ -10,7 +10,7 @@ import {metadataSignupHook} from "./metadata-hooks/metadata-hooks";
 //   response.send("Hello from Firebase!");
 // });
 
-initializeApp();
+firebase.initializeApp();
 
 export {
   adminUserCollectionUpdateHook,
