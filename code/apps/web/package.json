@@ -39,6 +39,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@cos720project/shared": "*",
 		"bits-ui": "^0.19.7",
 		"clsx": "^2.1.0",
 		"formsnap": "^0.5.1",

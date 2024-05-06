@@ -2,7 +2,7 @@
   "name" : "cos720project",
   "workspaces" : [
     "apps/*",
-    "fucntions/*",
-    "shared/*"
+    "functions",
+    "shared"
   ]
 }

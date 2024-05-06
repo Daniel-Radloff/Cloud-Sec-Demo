@@ -1,0 +1,3 @@
+{
+  "eslint.workingDirectories": ["./code", "./code/apps/web" , "./code/shared", "./code/functions"]
+}
