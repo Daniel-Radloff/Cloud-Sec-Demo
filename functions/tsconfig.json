@@ -7,9 +7,6 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "paths": {
-      "@types":["../src/lib"]
-    },
   },
   "compileOnSave": true,
   "include": [
