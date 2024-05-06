@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
-  import LoginForm from "../lib/components/ui/login-form/login-form.svelte";
+  import LoginForm from "$lib/components/ui/login-form/login-form.svelte";
 	import { AlignCenterVertical } from "lucide-svelte";
   export let data: PageData;
 </script>

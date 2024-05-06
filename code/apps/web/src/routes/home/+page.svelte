@@ -1,7 +1,7 @@
 <script lang="ts">
     import LoginForm from '$lib/components/ui/login-form/login-form.svelte';
     import type { PageData } from './$types';
-    import { UserServices } from '$lib/constants';
+    import { UserServices } from '$lib/app-constants';
 	import { HomeCardButton } from '$lib/components/ui/home-card-button';
     export let data: PageData;
 

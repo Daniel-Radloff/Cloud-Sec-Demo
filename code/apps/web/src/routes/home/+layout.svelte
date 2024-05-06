@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Breadcrumb from "$lib/components/ui/breadcrumb/index.js";
   import {page} from '$app/stores';
-	import { UserServices, paths } from "$lib/constants";
+	import { UserServices, paths } from "$lib/app-constants";
 
   type Crumb = {
     label : string,
