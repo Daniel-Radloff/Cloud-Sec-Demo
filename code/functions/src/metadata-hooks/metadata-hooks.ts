@@ -1,7 +1,7 @@
 import {getAuth} from "firebase-admin/auth";
 import {getFirestore} from "firebase-admin/firestore";
 import * as functions from "firebase-functions";
-import {Collections, userMetadata} from "appTypes";
+import {Collections, userMetadata} from "@cos720project/shared";
 
 export const metadataSignupHook =
 functions.auth.user().onCreate(async (user) => {

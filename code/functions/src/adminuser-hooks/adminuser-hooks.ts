@@ -1,7 +1,7 @@
 import {
   onDocumentCreated,
 } from "firebase-functions/v2/firestore";
-import {Collections} from "appTypes";
+import {Collections} from "@cos720project/shared";
 import {getFirestore} from "firebase-admin/firestore";
 
 type AdminDocument = {

@@ -47,6 +47,7 @@
 		"sveltekit-superforms": "^2.7.0",
 		"tailwind-merge": "^2.2.1",
 		"tailwind-variants": "^0.2.0",
-		"zod": "^3.22.4"
+		"zod": "^3.22.4",
+		"@cos720project/shared": "*"
 	}
 }
