@@ -3,7 +3,7 @@
     import type { PageData } from './$types';
     import { UserServices } from '$lib/app-constants';
 	import { HomeCardButton } from '$lib/components/ui/home-card-button';
-    export let data: PageData;
+    //export let data: PageData;
 
 </script>
 <div class="flex flex-wrap justify-center">
