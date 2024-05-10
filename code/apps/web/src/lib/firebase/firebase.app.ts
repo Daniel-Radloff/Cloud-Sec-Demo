@@ -1,11 +1,11 @@
 import {
   initializeApp,
-  getApps,
-  type FirebaseApp,
-  type FirebaseOptions
+  type FirebaseOptions,
+  type FirebaseApp
 } from "firebase/app";
-import {getAuth} from "firebase/auth";
-import {getAnalytics} from "firebase/analytics"
+import {connectAuthEmulator, getAuth, type Auth} from "firebase/auth";
+import {getAnalytics, type Analytics} from "firebase/analytics"
+import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
 
 const config: FirebaseOptions = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -17,18 +17,43 @@ const config: FirebaseOptions = {
   measurementId: process.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-let firebaseApp: FirebaseApp | undefined;
-if (!getApps().length) {
-   firebaseApp = initializeApp(config);
-} else {
-   firebaseApp = getApps()[0];
+let firebaseAuth:Auth;
+let firebaseApp:FirebaseApp;
+let firebaseAnalytics:Analytics;
+let firebaseFunctions:Functions;
+
+export const getFirebaseAppClient = ():FirebaseApp => {
+  if (!firebaseApp) {
+    firebaseApp = initializeApp(config);
+  }
+  return firebaseApp;
+};
+
+export const getFirebaseAuthClient = ():Auth => {
+  if (!firebaseAuth) {
+    firebaseAuth = getAuth(getFirebaseAppClient());
+    if (process.env.DEV == "TRUE") {
+      connectAuthEmulator(firebaseAuth, "http://localhost:9099");
+    }
+  }
+  return firebaseAuth;
+};
+
+export const getFirebaseAnalyticsClient = ():Analytics => {
+  if (!firebaseAnalytics) {
+    firebaseAnalytics = getAnalytics(getFirebaseAppClient());
+  }
+  return firebaseAnalytics;
 }
 
-const firebaseAuth = getAuth(firebaseApp);
-const firebaseAnalytics = getAnalytics(firebaseApp);
+export const getFirebaseFunctionsClient = ():Functions => {
+  if (!firebaseFunctions) {
+    firebaseFunctions = getFunctions(getFirebaseAppClient());
+    if (process.env.DEV == "TRUE") {
+      connectFunctionsEmulator(firebaseFunctions,'localhost',5001);
+    }
+  }
+  return firebaseFunctions;
+}
 
-export {
-  firebaseApp,
-  firebaseAuth,
-  firebaseAnalytics
-};
+getFirebaseAppClient();
