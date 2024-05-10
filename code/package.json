@@ -1,3 +1,9 @@
 {
-  "name" : "cos720project"
+  "name": "cos720project",
+  "dependencies": {
+    "dotenv-cli": "^7.4.2"
+  },
+  "scripts": {
+    "build" : "dotenv -- turbo run build"
+  }
 }
