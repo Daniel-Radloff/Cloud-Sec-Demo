@@ -1,3 +1,7 @@
 /node_modules
 /.turbo
-.env
+.env*
+cos720-4f6dc-firebase-adminsdk-y753t-5d80329feb.json
+firebase-debug.log
+ui-debug.log
+firestore-debug.log

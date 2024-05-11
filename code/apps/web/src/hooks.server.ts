@@ -4,12 +4,12 @@ import { redirect, type Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 
 const authGuard: Handle = async ({event, resolve}) => {
-  const firebaseSessionCookie = event.cookies.get("__session");
+  const firebaseSessionCookie = event.cookies.get("session");
   try {
     const token:DecodedIdToken = await getFirebaseAdminAuth()
       .verifySessionCookie(firebaseSessionCookie!);
     event.locals.firebaseAuthToken = token;
-  } catch {
+  } catch (error) {
     event.locals.firebaseAuthToken = undefined;
   }
   return resolve(event);
