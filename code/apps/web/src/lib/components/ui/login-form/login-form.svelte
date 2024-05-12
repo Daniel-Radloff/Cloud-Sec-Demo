@@ -2,23 +2,41 @@
   import * as Form from '$lib/components/ui/form';
   import {Input} from '$lib/components/ui/input';
   import {Button} from '$lib/components/ui/button';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-  import {type LoginFormSchema, loginFormSchema} from './schema';
+  import { zodClient } from 'sveltekit-superforms/adapters';
+  import {type LoginFormSchema, loginFormSchema, StudentNumberRegex, StudentCodeRegex} from './schema';
   import {
     type SuperValidated,
     type Infer,
     superForm,
   } from 'sveltekit-superforms';
-  import {GoogleAuthProvider, signInWithPopup} from "firebase/auth";
-	import { getFirebaseAuthClient } from '$lib/firebase/firebase.app';
-	import { goto } from '$app/navigation';
+  import {GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup} from "firebase/auth";
+  import { getFirebaseAuthClient } from '$lib/firebase/firebase.app';
 
   export let data: SuperValidated<Infer<LoginFormSchema>>;
-  let tokenForm: HTMLFormElement;
-  let tokenInput: HTMLInputElement;
+  let oauthTokenForm: HTMLFormElement;
+  let oauthTokenInput: HTMLInputElement;
+  let usernamePasswordForm: HTMLFormElement;
+
+  const defaultDomain = "@tuks.co.za";
 
   const handleUsernameOrEmail = async () => {
-
+    const auth = getFirebaseAuthClient();
+    let email:string;
+    if (StudentCodeRegex.test($loginFormData.username)) {
+      email = "u" + $loginFormData.username + defaultDomain;
+    } else if (StudentNumberRegex.test($loginFormData.username)) {
+      email = $loginFormData.username + defaultDomain;
+    } else {
+      email = $loginFormData.username
+    }
+    try {
+      const token = await (await signInWithEmailAndPassword(auth,email,$loginFormData.password)).user.getIdToken();
+      oauthTokenInput.value = token;
+      oauthTokenForm.submit();
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   };
 
   //restict to UP domains only
@@ -27,8 +45,8 @@
     await signInWithPopup(auth,new GoogleAuthProvider)
       .then(async (result) => {
         const token = await result.user.getIdToken();
-        tokenInput.value = token;
-        tokenForm.submit();
+        oauthTokenInput.value = token;
+        oauthTokenForm.submit();
       })
       .catch((error) => {
         console.log(error);
@@ -43,13 +61,13 @@
 
 </script>
 <div>
-<form on:submit={handleUsernameOrEmail}>
+<form method="post" use:enhance bind:this={usernamePasswordForm}>
   <Form.Field {form} name="username">
     <Form.Control let:attrs>
       <Form.Label>Username</Form.Label>
       <Input {...attrs} bind:value={$loginFormData.username} />
     </Form.Control>
-    <Form.Description>User Number Only: u12345678</Form.Description>
+    <Form.Description>Student Number, or UP email</Form.Description>
     <Form.FieldErrors />
   </Form.Field>
   <Form.Field {form} name="password" class="pb-3">
@@ -58,11 +76,12 @@
       <Input {...attrs} bind:value={$loginFormData.password} />
     </Form.Control>
     <Form.Description>Your Password</Form.Description>
+    <Form.FieldErrors />
   </Form.Field>
-  <Form.Button>Login</Form.Button>
+  <Button on:click={handleUsernameOrEmail} >Login</Button>
   <Button on:click={handleOAuth}>Login With Google</Button>
 </form>
-<form method="post" bind:this={tokenForm}>
-  <input name="token" type="hidden" bind:this={tokenInput}/>
+<form method="post" bind:this={oauthTokenForm}>
+  <input name="token" type="hidden" bind:this={oauthTokenInput}/>
 </form>
 </div>
