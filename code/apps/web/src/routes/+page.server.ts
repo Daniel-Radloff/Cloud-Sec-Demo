@@ -26,10 +26,10 @@ export const actions = {
             console.error(error);
             throw redirect(303, "/");
         }
-        cookies.set("session", sessionCookie, {
+        cookies.set("__session", sessionCookie, {
             secure:true,
             maxAge: ttl/1000,
-            path: "/home",
+            path: "/",
             sameSite:"lax"
         })
         throw redirect(303,"/home")

@@ -4,7 +4,7 @@ import { redirect, type Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 
 const authGuard: Handle = async ({event, resolve}) => {
-  const firebaseSessionCookie = event.cookies.get("session");
+  const firebaseSessionCookie = event.cookies.get("__session");
   try {
     const token:DecodedIdToken = await getFirebaseAdminAuth()
       .verifySessionCookie(firebaseSessionCookie!);
@@ -21,11 +21,6 @@ const routeGuards: Handle = async ({event, resolve}) => {
   if (process.env.IGNORE_AUTH === "TRUE") {
     return resolve(event);
   }
-  if (event.url.pathname.startsWith("/home")) {
-    if (!event.locals.firebaseAuthToken) {
-      throw redirect(303, "/");
-    }
-  }
   if (event.url.pathname.startsWith("/home/admin")) {
     if (!event.locals.firebaseAuthToken) {
       throw redirect(303, "/");
@@ -33,6 +28,17 @@ const routeGuards: Handle = async ({event, resolve}) => {
     if (!(event.locals.firebaseAuthToken?.admin === true)) {
       throw redirect(303, "/home");
     }
+  }
+  if (event.url.pathname.startsWith("/home")) {
+    if (!event.locals.firebaseAuthToken) {
+      throw redirect(303, "/");
+    }
+  }
+  if (event.url.pathname == "/" && event.locals.firebaseAuthToken != undefined) {
+    if (event.locals.firebaseAuthToken?.admin === true) {
+      throw redirect(303,"/home/admin");
+    }
+    throw redirect(303,"/home");
   }
   return resolve(event);
 };
