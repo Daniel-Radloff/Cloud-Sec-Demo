@@ -3,13 +3,51 @@ import {z} from "zod";
 // internal use
 const streetNameRegex = /\d\s\w/g;
 const phoneCountryCode = /^(\d{1,2}-)*\d{1,3}$/g;
+const moduleCode = /\d{3}\w{3}/g;
 
 export type ServiceCardData = {
   service_name : string,
   image_url: string,
   href : string
 };
+// Test Date
+const testDate = z.object({
+    name : z.string(),
+    date : z.date(),
+});
+// Modules
+export const universityModule = z.object({
+    id : z.string().uuid(),
+    name : z.string(),
+    code : z.string().refine((code) => moduleCode.test(code)),
+    credits : z.number().int(),
+    department : z.string(),
+    description : z.string(),
+    semester : z.string(),
+    term : z.string().optional(),
+    testDates : z.array(testDate)
+});
 
+export type UniversityModule = z.infer<typeof universityModule>;
+
+export const userRegisteredModule = z.object({
+    id : z.string().uuid(),
+    userId : z.string().uuid(),
+    moduleId : z.string().uuid(),
+    registrationDate : z.date(),
+    status : z.union([
+        z.literal("enrolled"),
+        z.literal("completed"),
+        z.literal("dropped"),
+        z.literal("pending")
+    ]),
+    grade : z.number().optional(),
+    notes : z.string().optional(),
+});
+
+export type UserRegisteredModule = z.infer<typeof userRegisteredModule>;
+
+// Meta Data
 export const personalInformation = z.object({
     name: z.string(),
     age: z.number().max(130).min(16),
