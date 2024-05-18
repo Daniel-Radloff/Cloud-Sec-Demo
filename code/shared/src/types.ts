@@ -73,6 +73,8 @@ export const userRegisteredDegree = z.object({
     enrolledModules : z.array(userRegisteredModule).optional()
 });
 
+export type UserRegisteredDegree = z.infer<typeof userRegisteredDegree>;
+
 // Meta Data
 export const personalInformation = z.object({
     name: z.string(),
