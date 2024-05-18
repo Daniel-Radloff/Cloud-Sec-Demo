@@ -6,6 +6,7 @@ import {
 import {connectAuthEmulator, getAuth, type Auth} from "firebase/auth";
 import {getAnalytics, type Analytics} from "firebase/analytics"
 import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
+import {connectFirestoreEmulator, getFirestore, type Firestore} from "firebase/firestore";
 
 const config: FirebaseOptions = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -21,6 +22,7 @@ let firebaseAuth:Auth;
 let firebaseApp:FirebaseApp;
 let firebaseAnalytics:Analytics;
 let firebaseFunctions:Functions;
+let firebaseFirestore:Firestore;
 
 export const getFirebaseAppClient = ():FirebaseApp => {
   if (!firebaseApp) {
@@ -54,6 +56,16 @@ export const getFirebaseFunctionsClient = ():Functions => {
     }
   }
   return firebaseFunctions;
+}
+
+export const getFirebaseFirestoreClient = ():Firestore => {
+  if (!firebaseFirestore) {
+    firebaseFirestore  = getFirestore(getFirebaseAppClient());
+    if (import.meta.env.DEV === true) {
+      connectFirestoreEmulator(firebaseFirestore, 'localhost', 8080)
+    }
+  }
+  return firebaseFirestore;
 }
 
 getFirebaseAppClient();

@@ -12,7 +12,7 @@ export type ServiceCardData = {
 };
 
 // Test Date
-const testDate = z.object({
+export const testDate = z.object({
     name : z.string(),
     date : z.date(),
 });
