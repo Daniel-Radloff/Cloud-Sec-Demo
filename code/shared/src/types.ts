@@ -10,6 +10,7 @@ export type ServiceCardData = {
   image_url: string,
   href : string
 };
+
 // Test Date
 const testDate = z.object({
     name : z.string(),
@@ -34,6 +35,7 @@ export const userRegisteredModule = z.object({
     id : z.string().uuid(),
     userId : z.string().uuid(),
     moduleId : z.string().uuid(),
+    module : universityModule.optional(),
     registrationDate : z.date(),
     status : z.union([
         z.literal("enrolled"),
@@ -46,6 +48,30 @@ export const userRegisteredModule = z.object({
 });
 
 export type UserRegisteredModule = z.infer<typeof userRegisteredModule>;
+
+// Degree Information
+export const universityDegree = z.object({
+    id : z.string().uuid(),
+    name : z.string(),
+    code : z.string(),
+    department : z.string(),
+    duration : z.number().int(),
+    description : z.string()
+});
+
+export type UniversityDegree = z.infer<typeof universityDegree>;
+
+export const userRegisteredDegree = z.object({
+    id : z.string().uuid(),
+    degreeId : z.string().uuid(),
+    degree : universityDegree.optional(),
+    userId : z.string().uuid(),
+    enrollmentDate : z.date(),
+    expectedGraduationDate : z.string(),
+    status : z.union([z.literal("active"), z.literal("completed"), z.literal("dropped")]),
+    enrolledModuleCodes : z.array(z.string().uuid()),
+    enrolledModules : z.array(userRegisteredModule).optional()
+});
 
 // Meta Data
 export const personalInformation = z.object({
