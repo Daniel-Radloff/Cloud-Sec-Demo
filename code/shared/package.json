@@ -2,12 +2,13 @@
   "name": "@cos720project/shared",
   "version": "1.0.0",
   "description": "shared consts and types",
-  "main": "./lib/index.js",
+  "main": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "exports" : {
-    "." : {
-      "types" : "./lib/index.d.ts",
-      "default" : "./lib/index.js"
-    }
+    "import" : "./dist/esm/index.js",
+    "require" : "./dist/cjs/index.js",
+    "default" : "./dist/esm/index.js",
+    "types" : "./dist/types/index.d.ts"
   },
   "author": {
     "name": "GD Radloff"
@@ -23,11 +24,11 @@
   },
   "files": [
     "./bin/*",
-    "./lib/*"
+    "./dist/*"
   ],
-  "typings": "./lib/index.d.ts",
+  "typings": "./dist/types/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json",
     "lint": "eslint --ext .js,.ts .",
     "prepublish": "npm run build"
   },
