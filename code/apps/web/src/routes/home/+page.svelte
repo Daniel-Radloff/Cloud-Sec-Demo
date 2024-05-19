@@ -7,7 +7,8 @@
   import { doc, getDoc} from 'firebase/firestore';
   import { Collections, userMetadata as userMetadataValidate } from '@cos720project/shared';
 	import type { PageData } from '../$types';
-  export let data: PageData;
+	import { onDestroy } from 'svelte';
+  //export let data: PageData;
   
   let isLoading = true;
   const loadUserData = async () => {
@@ -17,7 +18,7 @@
       const clear = setInterval(async ()=>{
         try {
           const userId = get(userAuthInfo)?.uid;
-          const userMetadataDocReference = doc(firestore,Collections.metadata,userId? userId : "")
+          const userMetadataDocReference = doc(firestore,Collections.metadata,userId ? userId : "default")
           const userMetadataSnap = await getDoc(userMetadataDocReference);
           if (userMetadataSnap.exists()) {
             userMetadata.set(userMetadataValidate.parse(userMetadataSnap.data()))
@@ -28,6 +29,9 @@
           console.log(error);
         }
       },1000)
+      onDestroy(() => clearInterval(clear))
+    } else {
+      isLoading = false;
     }
   }
   loadUserData();

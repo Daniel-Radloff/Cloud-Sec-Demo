@@ -28,7 +28,7 @@
   ],
   "typings": "./dist/types/index.d.ts",
   "scripts": {
-    "build": "tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json",
+    "build": "rm -rf ./dist && tsc --project tsconfig.esm.json & tsc --project tsconfig.cjs.json & tsc --project tsconfig.types.json",
     "lint": "eslint --ext .js,.ts .",
     "prepublish": "npm run build"
   },

@@ -1,10 +1,10 @@
 {
 	"compilerOptions": {
-    "target": "es2017",
-		"module": "commonjs",
-		"moduleResolution": "node",
+    "target": "ES2017",
 		"rootDir": "src",
-		"outDir": "lib",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"outDir": "dist/types",
 
 		"strict": true,
 		"alwaysStrict": true,
@@ -24,7 +24,7 @@
 		"experimentalDecorators": true,
 		"downlevelIteration": true,
 		"declaration": true,
-
+		"emitDeclarationOnly": true,
 		"pretty": true
 	},
 	"include": [

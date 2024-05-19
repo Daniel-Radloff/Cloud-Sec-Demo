@@ -11,7 +11,7 @@ import {connectFirestoreEmulator, getFirestore, type Firestore} from "firebase/f
 const config: FirebaseOptions = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  projectId: "cos720-4f6dc",
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
@@ -35,7 +35,7 @@ export const getFirebaseAuthClient = ():Auth => {
   if (!firebaseAuth) {
     firebaseAuth = getAuth(getFirebaseAppClient());
     if (import.meta.env.DEV === true) {
-      connectAuthEmulator(firebaseAuth, "http://localhost:9099");
+      connectAuthEmulator(firebaseAuth, "http://127.0.0.1:9099");
     }
   }
   return firebaseAuth;
@@ -52,7 +52,7 @@ export const getFirebaseFunctionsClient = ():Functions => {
   if (!firebaseFunctions) {
     firebaseFunctions = getFunctions(getFirebaseAppClient());
     if (import.meta.env.DEV === true) {
-      connectFunctionsEmulator(firebaseFunctions,'localhost',5001);
+      connectFunctionsEmulator(firebaseFunctions,'127.0.0.1',5001);
     }
   }
   return firebaseFunctions;
@@ -62,10 +62,14 @@ export const getFirebaseFirestoreClient = ():Firestore => {
   if (!firebaseFirestore) {
     firebaseFirestore  = getFirestore(getFirebaseAppClient());
     if (import.meta.env.DEV === true) {
-      connectFirestoreEmulator(firebaseFirestore, 'localhost', 8080)
+      console.log("using emulator")
+      connectFirestoreEmulator(firebaseFirestore, '127.0.0.1', 8080)
     }
   }
   return firebaseFirestore;
 }
 
 getFirebaseAppClient();
+getFirebaseFirestoreClient();
+getFirebaseFunctionsClient();
+getFirebaseAuthClient();

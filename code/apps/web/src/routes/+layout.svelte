@@ -2,7 +2,7 @@
   import "../app.css";
   import { getFirebaseAuthClient } from "$lib/firebase/firebase.app";
   import { onAuthStateChanged } from "firebase/auth";
-	import { userAuthInfo } from "../stores";
+	import { userAuthInfo, userDegrees, userMetadata } from "../stores";
 
   const auth = getFirebaseAuthClient();
   onAuthStateChanged(auth,(user) => {
@@ -11,7 +11,9 @@
       userAuthInfo.set(user);
     } else {
       // logged out
-      userAuthInfo.set(null);
+      userAuthInfo.set(undefined);
+      userMetadata.set(undefined);
+      userDegrees.set(undefined);
     }
   })
 </script>

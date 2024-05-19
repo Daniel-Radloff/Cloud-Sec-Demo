@@ -2,7 +2,6 @@
 	"compilerOptions": {
     "target": "ES2017",
 		"module": "CommonJS",
-		"declarationDir": "dist/types",
 		"rootDir": "src",
 		"outDir": "dist/cjs",
 
@@ -23,7 +22,6 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"downlevelIteration": true,
-		"declaration": true,
 		"pretty": true
 	},
 	"include": [

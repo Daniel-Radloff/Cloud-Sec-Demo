@@ -1,4 +1,7 @@
 export const Collections =  {
   adminUsers : "adminUsers",
-  metadata : "metadata"
+  metadata : "metadata",
+  degrees : "degrees",
+  modules : "modules",
+  userDegree : "userDegree"
 };
