@@ -5,3 +5,7 @@ export const Collections =  {
   modules : "modules",
   userDegree : "userDegree"
 };
+
+export const ImportantDocuments = {
+  registrationDates : "universityInformation/registrationDates"
+}

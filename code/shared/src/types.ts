@@ -11,6 +11,23 @@ export type ServiceCardData = {
   href : string
 };
 
+// University Information
+export const registrationDates = z.object({
+    newStudentRegistrationDeadline : z.date(),
+    returningStudentRegistrationDeadline : z.date(),
+    moduleRegistrationDeadlines : z.array(z.union([
+        z.object({
+            semester : z.number().int().min(1).max(2),
+            date : z.date()
+        }),
+        z.object({
+            term : z.number().int().min(1).max(4),
+            date : z.date()
+        })
+    ]))
+})
+export type RegistrationDates = z.infer<typeof registrationDates>;
+
 // Test Date
 export const testDate = z.object({
     name : z.string(),
@@ -24,8 +41,8 @@ export const universityModule = z.object({
     credits : z.number().int(),
     department : z.string(),
     description : z.string(),
-    semester : z.string(),
-    term : z.string().optional(),
+    semester : z.number().int().min(1).max(2),
+    term : z.number().int().min(1).max(4).optional(),
     testDates : z.array(testDate),
     cost : z.number(),
     prerequisites : z.array(z.array(z.string().uuid()))
