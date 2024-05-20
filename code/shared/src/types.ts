@@ -70,7 +70,8 @@ export const userRegisteredDegree = z.object({
     expectedGraduationDate : z.string(),
     status : z.union([z.literal("active"), z.literal("completed"), z.literal("dropped")]),
     enrolledModuleCodes : z.array(z.string().uuid()),
-    enrolledModules : z.array(userRegisteredModule).optional()
+    enrolledModules : z.array(userRegisteredModule).optional(),
+    completedCredits : z.number().int()
 });
 
 export type UserRegisteredDegree = z.infer<typeof userRegisteredDegree>;
@@ -160,6 +161,14 @@ export const transactionalData = z.object({
 });
 export type  TransactionalData = z.infer<typeof transactionalData>;
 
+export const academicInformationMetaData = z.object({
+    enrolledDegrees : z.number().int(),
+    completedDegrees : z.number().int(),
+    completedCredits : z.number().int()
+});
+
+export type AcademicInformationMetaData = z.infer<typeof academicInformationMetaData>;
+
 export const userMetadata = z.object({
     personalInformation: personalInformation.optional(),
     demographicInformation: demographicInformation.optional(),
@@ -168,5 +177,6 @@ export const userMetadata = z.object({
     preferences: preferences.optional(),
     securityInformation: securityInformation,
     transactionalData: transactionalData.optional(),
+    academicInformationMetaData : academicInformationMetaData,
 })
 export type UserMetadata = z.infer<typeof userMetadata>;

@@ -16,6 +16,11 @@ functions.auth.user().onCreate(async (user) => {
         username: user.displayName,
         accountEmail: user.email,
       },
+      academicInformationMetaData: {
+        enrolledDegrees: 0,
+        completedDegrees: 0,
+        completedCredits: 0,
+      },
     };
     const validatedMetadata = userMetadata.parse(metadata);
     await getFirestore().collection(Collections.metadata)
