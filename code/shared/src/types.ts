@@ -35,7 +35,6 @@ export const testDate = z.object({
 });
 // Modules
 export const universityModule = z.object({
-    id : z.string().uuid(),
     name : z.string(),
     code : z.string().refine((code) => moduleCode.test(code)),
     credits : z.number().int(),
@@ -51,8 +50,6 @@ export const universityModule = z.object({
 export type UniversityModule = z.infer<typeof universityModule>;
 
 export const userRegisteredModule = z.object({
-    id : z.string().uuid(),
-    userId : z.string().uuid(),
     moduleId : z.string().uuid(),
     module : universityModule.optional(),
     registrationDate : z.date(),
@@ -71,7 +68,6 @@ export type UserRegisteredModule = z.infer<typeof userRegisteredModule>;
 
 // Degree Information
 export const universityDegree = z.object({
-    id : z.string().uuid(),
     name : z.string(),
     code : z.string(),
     department : z.string(),
@@ -86,13 +82,12 @@ export const universityDegree = z.object({
 export type UniversityDegree = z.infer<typeof universityDegree>;
 
 export const userRegisteredDegree = z.object({
-    id : z.string().uuid(),
     degreeId : z.string().uuid(),
     degree : universityDegree.optional(),
     userId : z.string().uuid(),
     enrollmentDate : z.date(),
     expectedGraduationDate : z.string(),
-    status : z.union([z.literal("active"), z.literal("completed"), z.literal("dropped")]),
+    status : z.union([z.literal("active"), z.literal("completed"), z.literal("failed")]),
     enrolledModules : z.array(userRegisteredModule),
     completedCredits : z.number().int()
 });

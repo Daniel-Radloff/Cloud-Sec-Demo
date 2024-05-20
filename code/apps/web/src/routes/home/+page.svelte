@@ -8,8 +8,9 @@
   
   let isLoading = true;
 
-  onMount(()=> {
+  onMount(async ()=> {
     if ($userMetadata == undefined) {
+      // lambda to await store before loading data
       (async () => {
         try {
           isLoading = !(await awaitStore(userMetadata));

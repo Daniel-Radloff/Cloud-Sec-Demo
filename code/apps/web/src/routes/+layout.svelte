@@ -1,9 +1,8 @@
-<script>
+<script lang="ts">
   import "../app.css";
   import { getFirebaseAuthClient, getFirebaseFirestoreClient } from "$lib/firebase/firebase.app";
   import { onAuthStateChanged } from "firebase/auth";
 	import { userAuthInfo, userDegrees, userMetadata } from "../stores";
-	import { get } from "svelte/store";
 	import { onDestroy, onMount } from "svelte";
   import { Collections, userMetadata as userMetadataValidate } from '@cos720project/shared';
 	import { doc, getDoc } from "firebase/firestore";
@@ -15,21 +14,20 @@
         // signed in
         userAuthInfo.set(user);
         // get metadata
-        if (get(userMetadata) == undefined) {
-          const firestore = getFirebaseFirestoreClient();
-          const clear = setInterval(async ()=>{
-            try {
-              const userId = get(userAuthInfo)?.uid;
-              const userMetadataDocReference = doc(firestore,Collections.metadata,userId ? userId : "default")
-              const userMetadataSnap = await getDoc(userMetadataDocReference);
-              if (userMetadataSnap.exists()) {
-                userMetadata.set(userMetadataValidate.parse(userMetadataSnap.data()))
-                clearInterval(clear);
-              }
-            } catch (error) {
-              console.log(error);
+        const firestore = getFirebaseFirestoreClient();
+        try {
+          const userId = $userAuthInfo!.uid;
+          const userMetadataDocReference = doc(firestore,Collections.metadata,userId)
+          const userMetadataSnap = getDoc(userMetadataDocReference);
+          userMetadataSnap.then((data) => {
+            if (data.exists()) {
+              userMetadata.set(userMetadataValidate.parse(data.data()))
             }
-          },1000)
+          }).catch((reason) => {
+            console.log(reason);
+          });
+        } catch (error) {
+          console.log(error);
         }
       } else {
         // logged out
