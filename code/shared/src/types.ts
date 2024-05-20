@@ -26,7 +26,9 @@ export const universityModule = z.object({
     description : z.string(),
     semester : z.string(),
     term : z.string().optional(),
-    testDates : z.array(testDate)
+    testDates : z.array(testDate),
+    cost : z.number(),
+    prerequisites : z.array(z.array(z.string().uuid()))
 });
 
 export type UniversityModule = z.infer<typeof universityModule>;
@@ -40,9 +42,10 @@ export const userRegisteredModule = z.object({
     status : z.union([
         z.literal("enrolled"),
         z.literal("completed"),
-        z.literal("dropped"),
-        z.literal("pending")
+        z.literal("failed"),
+        z.literal("current")
     ]),
+    deregisterable : z.boolean(),
     grade : z.number().optional(),
     notes : z.string().optional(),
 });
@@ -56,7 +59,11 @@ export const universityDegree = z.object({
     code : z.string(),
     department : z.string(),
     duration : z.number().int(),
-    description : z.string()
+    description : z.string(),
+    coreModules : z.array(z.string().uuid()),
+    electiveModules : z.array(z.string().uuid()),
+    minCreditsPerSemester : z.number().int(),
+    minCredits : z.number().int()
 });
 
 export type UniversityDegree = z.infer<typeof universityDegree>;
@@ -69,8 +76,7 @@ export const userRegisteredDegree = z.object({
     enrollmentDate : z.date(),
     expectedGraduationDate : z.string(),
     status : z.union([z.literal("active"), z.literal("completed"), z.literal("dropped")]),
-    enrolledModuleCodes : z.array(z.string().uuid()),
-    enrolledModules : z.array(userRegisteredModule).optional(),
+    enrolledModules : z.array(userRegisteredModule),
     completedCredits : z.number().int()
 });
 

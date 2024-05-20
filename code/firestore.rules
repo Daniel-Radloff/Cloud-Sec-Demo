@@ -13,6 +13,12 @@ service cloud.firestore {
     match /metadata/{userId} {
       allow read: if request.auth != null;
     }
+    match /degrees/{degree} {
+      allow read;
+    }
+    match /modules/{module} {
+      allow read;
+    }
     match /userDegree/{degree} {
       allow read: if resource.data.userId == request.auth.uid;
     }
