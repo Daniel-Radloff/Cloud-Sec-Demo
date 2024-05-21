@@ -2,36 +2,56 @@
   import type { PageData } from './$types';
   import {ModuleManagerTable} from '$lib/components/ui/module-manager-table';
 	import { userAuthInfo, userDegrees } from '../../../stores';
-	import { get } from 'svelte/store';
-	import { getFirebaseFirestoreClient } from '$lib/firebase/firebase.app';
-	import { onDestroy } from 'svelte';
-	import { Collections } from '@cos720project/shared';
-	import { doc, getDoc } from 'firebase/firestore';
+	import { onMount } from 'svelte';
+	import { awaitStore, loadDegreeStore } from '$lib/functions';
+  import * as Tabs from "$lib/components/ui/tabs";
+  import { Skeleton } from "$lib/components/ui/skeleton";
   
   //export let data: PageData;
   let isLoading = true;
-  const loadUserData = async () => {
-    if (get(userDegrees) == undefined) {
-      const firestore = getFirebaseFirestoreClient();
-      const clear = setInterval(async ()=>{
-        try {
-          const userId = get(userAuthInfo)?.uid;
-          const userMetadataDocReference = doc(firestore,Collections.userDegree,userId ? userId : "default")
-          const userMetadataSnap = await getDoc(userMetadataDocReference);
-          if (userMetadataSnap.exists()) {
-            userDegrees.set(userMetadataValidate.parse(userMetadataSnap.data()))
-            isLoading = false;
-            clearInterval(clear);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      },1000)
-      onDestroy(() => clearInterval(clear))
+
+  // TODO: If 0 degrees registered then message
+  onMount(async () => {
+    // await stores and load stuff
+    await awaitStore(userAuthInfo);
+    loadDegreeStore($userAuthInfo!.uid);
+    if ($userDegrees.length == 0) {
+      (async () => {
+        isLoading = !(await awaitStore(userDegrees))
+      })()
     } else {
       isLoading = false;
     }
-  }
-  loadUserData();
+  })
+  $: degreeModules = $userDegrees.map((degree) => {return degree.enrolledModules});
+  // can be undefined
+  $: degrees = $userDegrees.map((degree) => {return degree.degree?.name});
 </script>
-<ModuleManagerTable/>
+
+{#if isLoading}
+<Tabs.Root value="0" class="w-4/5 h-4/5">
+  <Tabs.List class="grid w-full">
+    <Skeleton class="flex-grow"/>
+  </Tabs.List>
+  <Tabs.Content value="0">
+    <ModuleManagerTable />
+  </Tabs.Content>
+</Tabs.Root>
+{:else} 
+<Tabs.Root value="0" class="w-4/5">
+  <Tabs.List class="flex-grow">
+  {#each degrees as degree,count}
+    {#if degree}
+      <Tabs.Trigger value={count.toString()}>{degree}</Tabs.Trigger>
+    {:else}
+      <Tabs.Trigger value={count.toString()}><Skeleton class="flex-grow w-max-4/5"/></Tabs.Trigger>
+    {/if}
+  {/each}
+  </Tabs.List>
+  {#each degreeModules as modules, count}
+    <Tabs.Content value={count.toString()}>
+      Make changes to your account here.
+    </Tabs.Content>
+  {/each}
+</Tabs.Root>
+{/if}

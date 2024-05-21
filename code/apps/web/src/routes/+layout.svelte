@@ -33,7 +33,7 @@
         // logged out
         userAuthInfo.set(undefined);
         userMetadata.set(undefined);
-        userDegrees.set(undefined);
+        userDegrees.set([]);
       }
     })
   })

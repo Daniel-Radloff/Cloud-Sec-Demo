@@ -6,26 +6,26 @@ import { userDegrees } from "../stores";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 
 export const awaitStore = async (store:Writable<unknown|undefined>|Readable<unknown|undefined>):Promise<boolean> => {
+  if (!browser) return false;
   let isLoaded = false;
   let timeout = 0;
   // +- 10 seconds which is firestore retry aswell.
   const maxRetry = 50;
-  if (get(store) == undefined) {
-    while (!isLoaded && timeout < maxRetry) {
-      await new Promise((resolve) => setTimeout(resolve,200));
-      if (get(store) != undefined) {
-        isLoaded = true;
-      }
-      timeout = timeout + 1;
+  while (!isLoaded && timeout < maxRetry) {
+    const storeValue = get(store);
+    if (Array.isArray(storeValue)) {
+      if ((storeValue as Array<unknown>).length != 0) isLoaded = true;
+    } else if (storeValue != undefined) {
+      isLoaded = true;
     }
-    if (timeout == maxRetry) {
-      console.error("lib/functions awaitStore(store): Max Retry Exceeded on listener");
-      throw Error("lib/functions awaitStore(store): Max Retry Exceeded on listener");
-    }
-    return true;
-  } else {
-    return true;
+    await new Promise((resolve) => setTimeout(resolve,200));
+    timeout = timeout + 1;
   }
+  if (timeout == maxRetry) {
+    console.error("lib/functions awaitStore(store): Max Retry Exceeded on listener");
+    throw Error("lib/functions awaitStore(store): Max Retry Exceeded on listener");
+  }
+  return true;
 };
 
 export const loadDegreeStore = async (uid:string) => {
