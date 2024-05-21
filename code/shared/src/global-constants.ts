@@ -3,7 +3,7 @@ export const Collections =  {
   metadata : "metadata",
   degrees : "degrees",
   modules : "modules",
-  userDegree : "userDegree"
+  userDegree : "userDegrees"
 };
 
 export const ImportantDocuments = {

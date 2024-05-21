@@ -13,8 +13,8 @@
 
 <div class="h-80vh overflow-y-auto">
   {#if data}
-    <SubscribedTable data={data}/>
+    <SubscribedTable data={data} adminView={adminView}/>
   {:else}
-    <SkeletonTable/>
+    <SkeletonTable adminView={adminView}/>
   {/if}
 </div>

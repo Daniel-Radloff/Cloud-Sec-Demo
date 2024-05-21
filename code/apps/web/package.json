@@ -43,6 +43,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@faker-js/faker": "^8.4.1",
 		"bits-ui": "^0.19.7",
 		"clsx": "^2.1.0",
 		"dotenv-cli": "^7.4.2",
