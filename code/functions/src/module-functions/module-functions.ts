@@ -34,7 +34,11 @@ export const updateModuleDisplayInformation = onCall((request) => {
   validateAdminClaim(request.auth);
 });
 
-// handle
 export const discontinueModule = onCall((request) => {
   validateAdminClaim(request.auth);
+  const validatedModule = moduleValidator.parse(request.data);
+  const db = getFirestore();
+  db.collection(Collections.modules)
+    .doc(validatedModule.id!)
+    .update({discontinued:true});
 });

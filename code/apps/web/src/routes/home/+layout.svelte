@@ -9,6 +9,8 @@
   };
 
   let crumbs: Crumb[] = [];
+  let serviceUrls:string[] = [];
+  let serviceNames:string[] = [];
   $: {
     const urls:string[] = $page.url.pathname.split('/')
       .filter((url) => url !== '');
@@ -23,6 +25,18 @@
         href : tokenPath
       };
     })
+    const pageInfo = Object.entries(paths)
+      .map(([path, pathdata]) => ({...pathdata,}))
+      .filter(service => service.name == $page.url.pathname)
+    const services = pageInfo.at(0)!.nav_services;
+    serviceNames = services.map((service) => {
+      return service.slice(1)
+        .split("-")
+        .filter((word) => word !== '')
+        .map((word) => word.replace(/\w+/g, (match) => match.charAt(0).toUpperCase() + match.slice(1)))
+        .join(' ');
+    })
+    serviceUrls = services.map((service) => $page.url.pathname + service)
   }
 
 </script>
@@ -49,10 +63,9 @@
   </div>
   <div class="flex flex-1 justify-between space-x-2 md:justify-end">
     <nav class="flex items-center gap-6">
-      <a href={paths.module_manager.name} >Some Link</a>
-      <a href=link >Some Link</a>
-      <a href=link >Some Link</a>
-      <a href=link >Some Link</a>
+      {#each serviceUrls as _, count}
+      <a href={serviceUrls[count]}>{serviceNames[count]}</a>
+      {/each}
     </nav>
   </div>
 </div>

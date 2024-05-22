@@ -32,6 +32,6 @@ export const actions = {
             path: "/",
             sameSite:"lax"
         })
-        throw redirect(303,"/home")
+        throw redirect(303,"/")
     }
 }

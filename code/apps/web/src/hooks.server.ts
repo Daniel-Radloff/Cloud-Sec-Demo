@@ -21,17 +21,14 @@ const routeGuards: Handle = async ({event, resolve}) => {
   if (process.env.IGNORE_AUTH === "TRUE") {
     return resolve(event);
   }
-  if (event.url.pathname.startsWith("/home/admin")) {
-    if (!event.locals.firebaseAuthToken) {
-      throw redirect(303, "/");
-    }
-    if (!(event.locals.firebaseAuthToken?.admin === true)) {
-      throw redirect(303, "/home");
-    }
-  }
   if (event.url.pathname.startsWith("/home")) {
     if (!event.locals.firebaseAuthToken) {
       throw redirect(303, "/");
+    }
+  }
+  if (event.url.pathname.startsWith("/home/admin")) {
+    if (!(event.locals.firebaseAuthToken?.admin === true)) {
+      throw redirect(303, "/home");
     }
   }
   if (event.url.pathname == "/" && event.locals.firebaseAuthToken != undefined) {
