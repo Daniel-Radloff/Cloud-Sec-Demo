@@ -3,6 +3,7 @@ import {
 } from "firebase-functions/v2/firestore";
 import {Collections} from "@cos720project/shared";
 import {getFirestore} from "firebase-admin/firestore";
+import {getAuth} from "firebase-admin/auth";
 
 type AdminDocument = {
   name : string;
@@ -12,7 +13,7 @@ type AdminDocument = {
 
 
 export const adminUserCollectionUpdateHook =
-  onDocumentCreated("adminUsers/{humanId}", async (event) => {
+  onDocumentCreated((Collections.adminUsers+"/{humanId}"), async (event) => {
     const db = getFirestore();
     // cast unknown, check fields, recast.
     let newAdmin: AdminDocument;
@@ -37,6 +38,13 @@ export const adminUserCollectionUpdateHook =
 
     // debug trash, remove before push to prod
     console.log(adminAccount);
-    // adminAccount.forEach(doc => {
-    // })
+    adminAccount.forEach(doc => {
+      if (doc.exists) {
+	const adminClaim = {
+	  admin : true,
+	  accessLevel : 2
+	};
+	Promise.resolve(getAuth().setCustomUserClaims(doc.id,adminClaim));
+      }
+    })
   });

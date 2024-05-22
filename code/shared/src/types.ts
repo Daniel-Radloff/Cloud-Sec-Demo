@@ -35,6 +35,7 @@ export const testDate = z.object({
 });
 // Modules
 export const universityModule = z.object({
+    id : z.string().uuid().optional(),
     name : z.string(),
     code : z.string().refine((code) => moduleCode.test(code)),
     credits : z.number().int(),
@@ -44,7 +45,8 @@ export const universityModule = z.object({
     term : z.number().int().min(1).max(4).optional(),
     testDates : z.array(testDate),
     cost : z.number(),
-    prerequisites : z.array(z.array(z.string().uuid()))
+    prerequisites : z.array(z.array(z.string().uuid())),
+    discontinued : z.boolean().optional()
 });
 
 export type UniversityModule = z.infer<typeof universityModule>;
@@ -57,7 +59,8 @@ export const userRegisteredModule = z.object({
         z.literal("enrolled"),
         z.literal("completed"),
         z.literal("failed"),
-        z.literal("current")
+        z.literal("current"),
+        z.literal("discontinued")
     ]),
     deregisterable : z.boolean(),
     grade : z.number().optional(),
@@ -68,6 +71,7 @@ export type UserRegisteredModule = z.infer<typeof userRegisteredModule>;
 
 // Degree Information
 export const universityDegree = z.object({
+    id : z.string().uuid().optional(),
     name : z.string(),
     code : z.string(),
     department : z.string(),
@@ -76,12 +80,14 @@ export const universityDegree = z.object({
     coreModules : z.array(z.string().uuid()),
     electiveModules : z.array(z.string().uuid()),
     minCreditsPerSemester : z.number().int(),
-    minCredits : z.number().int()
+    minCredits : z.number().int(),
+    discontinued : z.boolean().optional()
 });
 
 export type UniversityDegree = z.infer<typeof universityDegree>;
 
 export const userRegisteredDegree = z.object({
+    id : z.string().uuid().optional(),
     degreeId : z.string().uuid(),
     degree : universityDegree.optional(),
     userId : z.string().uuid(),
