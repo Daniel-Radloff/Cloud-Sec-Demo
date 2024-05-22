@@ -2,35 +2,62 @@ import {
   onDocumentCreated,
   onDocumentUpdated,
 } from "firebase-functions/v2/firestore";
-import {Collections, universityDegree as universityDegreeValidator} from "@cos720project/shared";
-import {getFirestore} from "firebase-admin/firestore";
+import {Collections, NotificationData, universityDegree as universityDegreeValidator, userRegisteredDegree as userDegreeValidator} from "@cos720project/shared";
+import {FieldValue, getFirestore} from "firebase-admin/firestore";
 
+
+const notifyUsersOfModuleRemoval = async (moduleIds:string[],degreeId:string) => {
+  const db = getFirestore();
+  const userMetadataBatch = db.batch();
+  const userRegisteredDegreeBatch = db.batch();
+
+  const invalidDegreeQueries = moduleIds.map((moduleId) => {
+    return db.collection(Collections.userDegree)
+    .where("degreeId", "==", degreeId)
+    .where("status", "==", "active")
+    .where("enrolledModules", "array-contains", {moduleId: moduleId,status:"enrolled"});
+  });
+  const querySnapshots = await Promise.all(invalidDegreeQueries.map((query) => query.get()));
+  const invalidDegrees = querySnapshots.flatMap((snapshot) => {
+    return snapshot.docs
+      .filter((doc) => doc.exists)
+      .map((doc)=> userDegreeValidator.parse(doc.data));
+  });
+
+  invalidDegrees.forEach((invalidDegree) => {
+    const userId = invalidDegree.userId;
+    const docId = invalidDegree.id!;
+    const notificationData:NotificationData =  {
+      type : "registration",
+      message : "One or more modules you are registered for have been discontinued, please update your registration information."
+    }
+    let updatedModules = invalidDegree.enrolledModules.map((module) => {
+      if (moduleIds.includes(module.moduleId)) {
+	module.status = "discontinued";
+      }
+      return module;
+    });
+
+    userMetadataBatch.update(
+      db.collection(Collections.metadata).doc(userId),
+      {notificationData : FieldValue.arrayUnion(notificationData)}
+    );
+    userRegisteredDegreeBatch.update(
+      db.collection(Collections.userDegree).doc(docId),
+      {enrolledModules : updatedModules}
+    );
+  });
+  userMetadataBatch.commit();
+  userRegisteredDegreeBatch.commit();
+};
 
 export const universityDegreeCreatedHook =
   onDocumentCreated(Collections.degrees+ "/{id}", async (event) => {
     if (!event.data) return;
-    const db = getFirestore();
-    Promise.resolve(db.collection(Collections.degrees)
-      .doc(event.data.id)
-      .update({id: event.data.id}));
+    event.data.ref.update({id: event.data.id});
     console.log("Added New Degree: " + event.data.id + " to " + Collections.degrees + " collection");
 });
 
-const notifyUsersOfModuleRemoval = async (moduleIds:string[],degreeId:string) => {
-  const db = getFirestore();
-  const invalidDegreeQueries = moduleIds.flatMap(async (moduleId) => {
-    return await db.collection(Collections.userDegree)
-    .where("status", "==", "active")
-    .where("enrolledModules", "array-contains", {moduleId: moduleId,status:"enrolled"})
-    .get();
-  });
-  const invalidDegrees = invalidDegreeQueries.flatMap(async (promise) => {
-    const query = await promise;
-    return query.docs.filter((doc) => doc.exists)
-  });
-  invalidDegrees.forEach((invalidDegree) => {
-  });
-};
 
 export const universityDegreeUpdatedHook =
   onDocumentUpdated(Collections.degrees + "/{id}", async (event) => {
@@ -57,7 +84,9 @@ export const universityDegreeUpdatedHook =
       notifyUsersOfModuleRemoval(removedElectiveModules, original.id!);
     }
 
-    //
+    // checking if discontinued
+    if (original.discontinued === modified.discontinued) {
+    }
 
     const db = getFirestore();
     const reference = await db.collection("degreesBackup").add(original);

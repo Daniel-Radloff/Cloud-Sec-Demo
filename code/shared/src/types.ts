@@ -60,7 +60,8 @@ export const userRegisteredModule = z.object({
         z.literal("completed"),
         z.literal("failed"),
         z.literal("current"),
-        z.literal("discontinued")
+        z.literal("discontinued"),
+        z.literal("prerequisites not satisfied")
     ]),
     deregisterable : z.boolean(),
     grade : z.number().optional(),
@@ -193,6 +194,13 @@ export const academicInformationMetaData = z.object({
 
 export type AcademicInformationMetaData = z.infer<typeof academicInformationMetaData>;
 
+export const notificationData = z.object({
+    type : z.string(),
+    message : z.string()
+});
+
+export type NotificationData = z.infer<typeof notificationData>;
+
 export const userMetadata = z.object({
     personalInformation: personalInformation.optional(),
     demographicInformation: demographicInformation.optional(),
@@ -202,5 +210,6 @@ export const userMetadata = z.object({
     securityInformation: securityInformation,
     transactionalData: transactionalData.optional(),
     academicInformationMetaData : academicInformationMetaData,
+    notificationData : z.array(notificationData)
 })
 export type UserMetadata = z.infer<typeof userMetadata>;

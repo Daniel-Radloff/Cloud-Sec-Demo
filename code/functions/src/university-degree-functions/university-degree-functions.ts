@@ -1,8 +1,6 @@
-import * as functions from "firebase-functions";
-import {getAuth} from "firebase-admin/auth";
 import {getFirestore} from "firebase-admin/firestore";
 import {Collections, universityDegree as universityDegreeValidator} from "@cos720project/shared";
-import {HttpsError, onCall} from "firebase-functions/v2/https";
+import {onCall} from "firebase-functions/v2/https";
 import {validateAdminClaim} from "../helpers/validate-claim";
 
 

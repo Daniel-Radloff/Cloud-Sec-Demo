@@ -21,6 +21,7 @@ functions.auth.user().onCreate(async (user) => {
         completedDegrees: 0,
         completedCredits: 0,
       },
+      notificationData : []
     };
     const validatedMetadata = userMetadata.parse(metadata);
     await getFirestore().collection(Collections.metadata)
