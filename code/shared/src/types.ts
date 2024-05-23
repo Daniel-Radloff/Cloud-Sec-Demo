@@ -35,7 +35,7 @@ export const testDate = z.object({
 });
 // Modules
 export const universityModule = z.object({
-    id : z.string().uuid().optional(),
+    id : z.string().optional(),
     name : z.string().min(8),
     code : z.coerce.string().regex(moduleCode, "Code is invalid"),
     credits : z.coerce.number().int().nonnegative(),
@@ -45,14 +45,14 @@ export const universityModule = z.object({
     term : z.number().int().min(1).max(4).optional(),
     testDates : z.array(testDate),
     cost : z.coerce.number().nonnegative(),
-    prerequisites : z.array(z.array(z.string().uuid())),
+    prerequisites : z.array(z.array(z.string())),
     discontinued : z.boolean().optional()
 });
 
 export type UniversityModule = z.infer<typeof universityModule>;
 
 export const userRegisteredModule = z.object({
-    moduleId : z.string().uuid(),
+    moduleId : z.string(),
     module : universityModule.optional(),
     registrationDate : z.date(),
     status : z.union([
@@ -72,14 +72,14 @@ export type UserRegisteredModule = z.infer<typeof userRegisteredModule>;
 
 // Degree Information
 export const universityDegree = z.object({
-    id : z.string().uuid().optional(),
+    id : z.string().optional(),
     name : z.string().min(8),
     code : z.string().min(2),
     department : z.string().min(3),
     duration : z.number().int().max(7).min(1),
     description : z.string().min(10),
-    coreModules : z.array(z.string().uuid()),
-    electiveModules : z.array(z.string().uuid()),
+    coreModules : z.array(z.string()),
+    electiveModules : z.array(z.string()),
     minCreditsPerSemester : z.coerce.number().int().nonnegative().min(64),
     minCredits : z.coerce.number().int().nonnegative().min(384),
     discontinued : z.boolean().optional()
@@ -88,10 +88,10 @@ export const universityDegree = z.object({
 export type UniversityDegree = z.infer<typeof universityDegree>;
 
 export const userRegisteredDegree = z.object({
-    id : z.string().uuid().optional(),
-    degreeId : z.string().uuid(),
+    id : z.string().optional(),
+    degreeId : z.string(),
     degree : universityDegree.optional(),
-    userId : z.string().uuid(),
+    userId : z.string(),
     enrollmentDate : z.date(),
     expectedGraduationDate : z.string(),
     status : z.union([z.literal("active"), z.literal("completed"), z.literal("failed")]),
