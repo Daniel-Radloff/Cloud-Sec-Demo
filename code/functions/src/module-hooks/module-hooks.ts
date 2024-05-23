@@ -112,6 +112,9 @@ export const moduleUpdatedHook =
 	event.data.after.ref.set(event.data.before.data());
 	return;
     }
+    if (event.data.before.data().id === undefined) {
+      return;
+    }
 
     const original = moduleValidator.parse(event.data.before.data());
     const modified = moduleValidator.parse(event.data.after.data());
@@ -130,6 +133,6 @@ export const moduleUpdatedHook =
     // checking if discontinued
     if (modified.discontinued) discontinueModule(modified.id!);
 
-    const reference = await db.collection("degreesBackup").add(original);
-    console.log("Backup Created of " + original.code + ".degrees/" + original.id + " -> degreesBackup" + reference.id)
+    const reference = await db.collection("modulesBackup").add(original);
+    console.log("Backup Created of " + original.code + ".modules/" + original.id + " -> modulesBackup" + reference.id)
 });

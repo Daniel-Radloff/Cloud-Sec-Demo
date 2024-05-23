@@ -34,7 +34,7 @@ export const testDate = z.object({
     date : z.date(),
 });
 // Modules
-export const universityModule = z.object({
+const universityModulePre = z.object({
     id : z.string().optional(),
     name : z.string().min(8),
     code : z.coerce.string().regex(moduleCode, "Code is invalid"),
@@ -48,6 +48,9 @@ export const universityModule = z.object({
     prerequisites : z.array(z.array(z.string())),
     discontinued : z.boolean().optional()
 });
+export const universityModule = universityModulePre.extend({
+  prerequisiteObjects : z.array(z.array(universityModulePre)).optional(),
+})
 
 export type UniversityModule = z.infer<typeof universityModule>;
 
@@ -79,7 +82,9 @@ export const universityDegree = z.object({
     duration : z.number().int().max(7).min(1),
     description : z.string().min(10),
     coreModules : z.array(z.string()),
+    coreModuleObjects : z.array(universityModule).optional(),
     electiveModules : z.array(z.string()),
+    electiveModuleObjects : z.array(universityModule).optional(),
     minCreditsPerSemester : z.coerce.number().int().nonnegative().min(64),
     minCredits : z.coerce.number().int().nonnegative().min(384),
     discontinued : z.boolean().optional()

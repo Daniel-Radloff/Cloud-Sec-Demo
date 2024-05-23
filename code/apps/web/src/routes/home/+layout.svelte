@@ -17,7 +17,7 @@
     let tokenPath: string = "";
 
     crumbs = urls.map((url) => {
-      tokenPath = "/" + url;
+      tokenPath = tokenPath + "/" + url;
       return {
         label : url.replace(/\w+/g, (match) => match.charAt(0).toUpperCase() + match.slice(1))
           .split('-')

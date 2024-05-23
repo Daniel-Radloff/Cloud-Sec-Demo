@@ -80,6 +80,6 @@ export const functionNames = {
     updateModulePresentationTime : "moduleFunctions-updateModulePresentationTime",
   },
   universityDegreeFunctions : {
-    addDegree : ""
+    addDegree : "universityDegreeFunctions-addNewDegree"
   },
 }

@@ -12,6 +12,10 @@
 	import { Check, ChevronsUpDown } from "lucide-svelte";
 	import { tick } from "svelte";
 	import { Textarea } from "$lib/components/ui/textarea";
+	import { getFirebaseFunctionsClient } from "$lib/firebase/firebase.app";
+	import { httpsCallable } from "firebase/functions";
+	import { functionNames } from "$lib/app-constants";
+	import { stripObject } from "$lib/functions";
  
   export let data: PageData;
   let open = false;
@@ -19,12 +23,14 @@
 
   const form = superForm(data.form, {
     validators: zodClient(universityDegree),
+    resetForm : false,
+    onResult({result}) {
+      if (result.type != "success") return;
+      const functions = getFirebaseFunctionsClient();
+      const addDegree = httpsCallable(functions, functionNames.universityDegreeFunctions.addDegree);
+      addDegree(stripObject($formData));
+    },
   });
-
-  const handleSubmit = (event:Event) => {
-    event.preventDefault();
-    console.log("reached");
-  };
  
   const { form: formData, enhance } = form;
 
@@ -37,7 +43,7 @@
 </script>
  
 <div>
-<form method="post" on:submit={handleSubmit} use:enhance>
+<form method="post" use:enhance>
   <Form.Field {form} name="name">
     <Form.Control let:attrs>
       <Form.Label>Degree Name</Form.Label>

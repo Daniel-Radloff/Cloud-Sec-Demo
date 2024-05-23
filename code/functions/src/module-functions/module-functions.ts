@@ -1,14 +1,22 @@
 import {getFirestore} from "firebase-admin/firestore";
 import {Collections, universityModule as moduleValidator} from "@cos720project/shared";
-import {onCall} from "firebase-functions/v2/https";
+import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {validateAdminClaim} from "../helpers/validate-claim";
 
 
 export const addModule = onCall((request) => {
   validateAdminClaim(request.auth);
-  const validatedModule = moduleValidator.parse(request.data);
-  const db = getFirestore();
-  db.collection(Collections.modules).add(validatedModule);
+  try {
+    let validatedModule = moduleValidator.parse(request.data);
+    // set fields that must be undefined to undefined
+    validatedModule.discontinued = undefined;
+    validatedModule.id = undefined;
+    validatedModule.prerequisiteObjects = undefined;
+    const db = getFirestore();
+    db.collection(Collections.modules).add(validatedModule);
+  } catch (error) {
+    throw new HttpsError("invalid-argument","The parameters passed with this request are invalid.")
+  }
 });
 
 export const updateModulePrerequisites = onCall((request) => {

@@ -70,6 +70,9 @@ export const universityDegreeUpdatedHook =
 	event.data.after.ref.set(event.data.before.data());
 	return;
     }
+    if (event.data.before.data().id === undefined) {
+      return;
+    }
 
     if (!event.data) return;
     // checking module fields
