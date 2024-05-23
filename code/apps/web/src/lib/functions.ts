@@ -84,3 +84,9 @@ export const loadDegreeStore = async (uid:string) => {
   await Promise.allSettled(modulePromises);
 
 };
+
+export const stripObject = (object:object) => {
+  return Object.fromEntries(
+    Object.entries(object).filter(([,value])=> value !== undefined)
+  );
+}

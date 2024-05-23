@@ -72,3 +72,14 @@ export const AdminServices:ServiceCardData[] = [
     href : paths.admin_modify_module.name
   }
 ];
+
+export const functionNames = {
+  moduleFunctions : {
+    addModule : "moduleFunctions-addModule",
+    updatePrerequisites : "moduleFunctions-updateModulePrerequisites",
+    updateModulePresentationTime : "moduleFunctions-updateModulePresentationTime",
+  },
+  universityDegreeFunctions : {
+    addDegree : ""
+  },
+}

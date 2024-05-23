@@ -12,6 +12,10 @@
   import { Check, ChevronsUpDown } from "lucide-svelte";
   import { onMount, tick } from "svelte";
   import { Textarea } from "$lib/components/ui/textarea";
+	import { getFirebaseFunctionsClient } from "$lib/firebase/firebase.app";
+	import { httpsCallable } from "firebase/functions";
+	import { functionNames } from "$lib/app-constants";
+	import { stripObject } from "$lib/functions";
  
   export let data: PageData;
   let openSemesterDialog = false;
@@ -20,9 +24,12 @@
   let terms = [undefined,1,2,3,4];
   const form = superForm(data.form, {
     validators: zodClient(universityModule),
+    resetForm : false,
     onResult({result}) {
       if (result.type != "success") return;
-      console.log("correct behavior")
+      const functions = getFirebaseFunctionsClient();
+      const addModule = httpsCallable(functions, functionNames.moduleFunctions.addModule);
+      addModule(stripObject($formData));
     },
   });
 
