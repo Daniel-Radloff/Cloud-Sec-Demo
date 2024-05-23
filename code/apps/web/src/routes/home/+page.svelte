@@ -20,12 +20,9 @@
         }
       })()
     } else {
-      if ((await $userAuthInfo?.getIdTokenResult())?.claims.admin) {
-        goto("/home/admin")
-      }
       isLoading = false;
     }
-  })
+  });
 </script>
 <div class="flex flex-wrap justify-center">
   {#each UserServices as service}

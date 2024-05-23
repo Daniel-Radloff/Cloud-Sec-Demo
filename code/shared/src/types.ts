@@ -73,15 +73,15 @@ export type UserRegisteredModule = z.infer<typeof userRegisteredModule>;
 // Degree Information
 export const universityDegree = z.object({
     id : z.string().uuid().optional(),
-    name : z.string(),
-    code : z.string(),
-    department : z.string(),
-    duration : z.number().int(),
-    description : z.string(),
+    name : z.string().min(8),
+    code : z.string().min(2),
+    department : z.string().min(3),
+    duration : z.number().int().max(7).min(1),
+    description : z.string().min(10),
     coreModules : z.array(z.string().uuid()),
     electiveModules : z.array(z.string().uuid()),
-    minCreditsPerSemester : z.number().int(),
-    minCredits : z.number().int(),
+    minCreditsPerSemester : z.coerce.number().int().nonnegative().min(64),
+    minCredits : z.coerce.number().int().nonnegative().min(384),
     discontinued : z.boolean().optional()
 });
 
@@ -128,10 +128,10 @@ export const demographicInformation = z.object({
     ethnicity : z.union([z.literal("black"), z.literal("white"), z.literal("indian"), z.literal("asian"), z.literal("mixed")]).optional(),
     language : z.string().optional(),
     educationLevel : z.union([
-        z.literal("high school"), 
-        z.literal("diploma"), 
-        z.literal("certification"), 
-        z.literal("bachelors"), 
+        z.literal("high school"),
+        z.literal("diploma"),
+        z.literal("certification"),
+        z.literal("bachelors"),
         z.literal("honors"),
         z.literal("masters"),
         z.literal("doctorate")
