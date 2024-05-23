@@ -36,15 +36,15 @@ export const testDate = z.object({
 // Modules
 export const universityModule = z.object({
     id : z.string().uuid().optional(),
-    name : z.string(),
+    name : z.string().min(8),
     code : z.coerce.string().regex(moduleCode, "Code is invalid"),
-    credits : z.coerce.number().int(),
-    department : z.string(),
-    description : z.string(),
+    credits : z.coerce.number().int().nonnegative(),
+    department : z.string().min(3),
+    description : z.string().min(18),
     semester : z.number().int().min(1).max(2),
     term : z.number().int().min(1).max(4).optional(),
     testDates : z.array(testDate),
-    cost : z.coerce.number(),
+    cost : z.coerce.number().nonnegative(),
     prerequisites : z.array(z.array(z.string().uuid())),
     discontinued : z.boolean().optional()
 });
@@ -96,7 +96,7 @@ export const userRegisteredDegree = z.object({
     expectedGraduationDate : z.string(),
     status : z.union([z.literal("active"), z.literal("completed"), z.literal("failed")]),
     enrolledModules : z.array(userRegisteredModule),
-    completedCredits : z.number().int()
+    completedCredits : z.number().int().nonnegative()
 });
 
 export type UserRegisteredDegree = z.infer<typeof userRegisteredDegree>;
@@ -187,9 +187,9 @@ export const transactionalData = z.object({
 export type  TransactionalData = z.infer<typeof transactionalData>;
 
 export const academicInformationMetaData = z.object({
-    enrolledDegrees : z.number().int(),
-    completedDegrees : z.number().int(),
-    completedCredits : z.number().int()
+    enrolledDegrees : z.number().int().nonnegative(),
+    completedDegrees : z.number().int().nonnegative(),
+    completedCredits : z.number().int().nonnegative()
 });
 
 export type AcademicInformationMetaData = z.infer<typeof academicInformationMetaData>;
