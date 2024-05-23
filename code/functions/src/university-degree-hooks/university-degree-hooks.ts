@@ -61,11 +61,20 @@ export const universityDegreeCreatedHook =
 
 export const universityDegreeUpdatedHook =
   onDocumentUpdated(Collections.degrees + "/{id}", async (event) => {
+    if (!event.data) return;
+    // should never happen but warn
+    if (!event.data.before.exists) return;
+    if (!event.data.after.exists) return;
+    const db = getFirestore();
+    if (event.data.before.id !== event.data.after.data().id || event.data.before.id !== event.data.after.id) {
+	event.data.after.ref.set(event.data.before.data());
+	return;
+    }
 
     if (!event.data) return;
     // checking module fields
-    const original = universityDegreeValidator.parse(event.data.before);
-    const modified = universityDegreeValidator.parse(event.data.after);
+    const original = universityDegreeValidator.parse(event.data.before.data());
+    const modified = universityDegreeValidator.parse(event.data.after.data());
 
     const addedCoreModules = modified.coreModules.filter((module) => !original.coreModules.includes(module));
     const addedElectiveModules = modified.electiveModules.filter((module) => !original.electiveModules.includes(module));
@@ -88,7 +97,6 @@ export const universityDegreeUpdatedHook =
     if (original.discontinued === modified.discontinued) {
     }
 
-    const db = getFirestore();
     const reference = await db.collection("degreesBackup").add(original);
     console.log("Backup Created of " + original.code + ".degrees/" + original.id + " -> degreesBackup" + reference.id)
 });

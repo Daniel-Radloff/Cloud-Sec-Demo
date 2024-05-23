@@ -104,9 +104,17 @@ export const moduleCreatedHook =
 export const moduleUpdatedHook =
   onDocumentUpdated(Collections.modules + "/{id}", async (event) => {
     if (!event.data) return;
-    // checking module fields
-    const original = moduleValidator.parse(event.data.before);
-    const modified = moduleValidator.parse(event.data.after);
+    // should never happen but warn
+    if (!event.data.before.exists) return;
+    if (!event.data.after.exists) return;
+    const db = getFirestore();
+    if (event.data.before.id !== event.data.after.data().id || event.data.before.id !== event.data.after.id) {
+	event.data.after.ref.set(event.data.before.data());
+	return;
+    }
+
+    const original = moduleValidator.parse(event.data.before.data());
+    const modified = moduleValidator.parse(event.data.after.data());
 
     const addedPrerequisites = modified.prerequisites.filter((module) => !original.prerequisites.includes(module));
     const removedPrerequisites = original.prerequisites.filter((module) => !modified.prerequisites.includes(module));
@@ -122,7 +130,6 @@ export const moduleUpdatedHook =
     // checking if discontinued
     if (modified.discontinued) discontinueModule(modified.id!);
 
-    const db = getFirestore();
     const reference = await db.collection("degreesBackup").add(original);
     console.log("Backup Created of " + original.code + ".degrees/" + original.id + " -> degreesBackup" + reference.id)
 });

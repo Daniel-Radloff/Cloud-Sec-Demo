@@ -1,6 +1,8 @@
 import * as firebase from "firebase-admin";
-import {adminUserCollectionUpdateHook} from "./adminuser-hooks/adminuser-hooks";
-import {metadataSignupHook} from "./metadata-hooks/metadata-hooks";
+import * as adminUserHooks  from "./adminuser-hooks/adminuser-hooks";
+import * as metadataHooks from "./metadata-hooks/metadata-hooks";
+import * as moduleFunctions from "./module-functions/module-functions";
+import * as moduleHooks from "./module-hooks/module-hooks";
 
 // // Start writing functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -13,6 +15,8 @@ import {metadataSignupHook} from "./metadata-hooks/metadata-hooks";
 firebase.initializeApp();
 
 export {
-  adminUserCollectionUpdateHook,
-  metadataSignupHook,
+  adminUserHooks,
+  metadataHooks,
+  moduleFunctions,
+  moduleHooks
 };
