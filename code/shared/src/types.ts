@@ -3,7 +3,7 @@ import {z} from "zod";
 // internal use
 const streetNameRegex = /\d\s\w/g;
 const phoneCountryCode = /^(\d{1,2}-)*\d{1,3}$/g;
-const moduleCode = /\d{3}\w{3}/g;
+export const moduleCode = /\w{3}\d{3}/g;
 
 export type ServiceCardData = {
   service_name : string,
@@ -37,14 +37,14 @@ export const testDate = z.object({
 export const universityModule = z.object({
     id : z.string().uuid().optional(),
     name : z.string(),
-    code : z.string().refine((code) => moduleCode.test(code)),
-    credits : z.number().int(),
+    code : z.coerce.string().regex(moduleCode, "Code is invalid"),
+    credits : z.coerce.number().int(),
     department : z.string(),
     description : z.string(),
     semester : z.number().int().min(1).max(2),
     term : z.number().int().min(1).max(4).optional(),
     testDates : z.array(testDate),
-    cost : z.number(),
+    cost : z.coerce.number(),
     prerequisites : z.array(z.array(z.string().uuid())),
     discontinued : z.boolean().optional()
 });
@@ -110,7 +110,7 @@ export const personalInformation = z.object({
     })]),
     dateOfBirth: z.date(),
     address: z.object({
-        street : z.string().refine((streetname) => streetNameRegex.test(streetname)),
+        street : z.string().regex(streetNameRegex, "Invalid Street name format"),
         appartmentNumber: z.string().optional(),
         city : z.string(),
         country : z.string(),
@@ -118,7 +118,7 @@ export const personalInformation = z.object({
     }),
     emailAddress: z.string().email(),
     phoneNumber: z.object({
-        code: z.string().refine((code) => phoneCountryCode.test(code)),
+        code: z.string().regex(phoneCountryCode, "cellphone country code invalid"),
         number: z.string().max(10).min(9),
     })
 });

@@ -2,12 +2,7 @@
   import * as Form from "$lib/components/ui/form";
   import { Input } from "$lib/components/ui/input";
   import { universityDegree, type UniversityDegree } from "@cos720project/shared";
-  import {
-    type SuperValidated,
-    type Infer,
-    superForm,
-	superValidate,
-  } from "sveltekit-superforms";
+  import { superForm } from "sveltekit-superforms";
   import { zod, zodClient } from "sveltekit-superforms/adapters";
 	import type { PageData } from "./$types";
   import * as Popover from "$lib/components/ui/popover/index.js";
