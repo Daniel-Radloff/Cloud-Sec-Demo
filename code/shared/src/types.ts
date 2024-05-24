@@ -77,7 +77,9 @@ export type UserRegisteredModule = z.infer<typeof userRegisteredModule>;
 export const universityDegree = z.object({
     id : z.string().optional(),
     name : z.string().min(8),
+    nameSearchField : z.array(z.string()).optional(),
     code : z.string().min(2),
+    codeSearchField : z.array(z.string()).optional(),
     department : z.string().min(3),
     duration : z.number().int().max(7).min(1),
     description : z.string().min(10),

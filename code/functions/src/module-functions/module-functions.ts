@@ -12,6 +12,8 @@ export const addModule = onCall((request) => {
     validatedModule.discontinued = undefined;
     validatedModule.id = undefined;
     validatedModule.prerequisiteObjects = undefined;
+    const nameSearchField = validatedModule.name.split('');
+    const codeSearchField = validatedModule.code.split('');
     const db = getFirestore();
     db.collection(Collections.modules).add(validatedModule);
   } catch (error) {
