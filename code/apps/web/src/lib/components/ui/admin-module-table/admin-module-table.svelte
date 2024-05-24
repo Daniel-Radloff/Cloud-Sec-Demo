@@ -2,69 +2,35 @@
 <script lang="ts">
   import type { UniversityModule } from "@cos720project/shared";
   import {createRender, createTable,Render, Subscribe}  from "svelte-headless-table";
-  import type { Readable } from "svelte/store";
+  import { readable, type Readable } from "svelte/store";
   import * as Table from "$lib/components/ui/table";
 	import { DeleteIcon } from "lucide-svelte";
   import { Button } from "$lib/components/ui/button/index";
 
-  export let data: Readable<UniversityModule[]>;
+  export let data: UniversityModule[] = [];
   export let callback:(id:string) => void;
 
-  const table = createTable(data);
-  const removeModule = (id:string) => {};
-  const columns = table.createColumns([
-    table.column({
-      header : "Code",
-      accessor : (module) => module.code
-    }),
-    table.column({
-      header : "Name",
-      accessor : (module) => module.name
-    }),
-    table.column({
-      header : "Credits",
-      accessor : (module) => module.credits
-    }),
-    table.column({
-      header : "RemoveModule",
-      accessor : (module) => module.id!,
-      cell : ({ value }) => createRender(Button,{variant:"destructive"})
-          .on('click',() => callback(value))
-    })
-  ])
-  const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =
-    table.createViewModel(columns);
 </script>
 
-<Table.Root {...$tableAttrs}>
+<Table.Root>
   <Table.Header>
-    {#each $headerRows as headerRow}
-      <Subscribe rowAttrs={headerRow.attrs()}>
-        <Table.Row>
-          {#each headerRow.cells as cell (cell.id)}
-            <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
-              <Table.Head {...attrs}>
-                <Render of={cell.render()} />
-              </Table.Head>
-            </Subscribe>
-          {/each}
-        </Table.Row>
-      </Subscribe>
-    {/each}
+    <Table.Row>
+      <Table.Head>Code</Table.Head>
+      <Table.Head>Name</Table.Head>
+      <Table.Head>Credits</Table.Head>
+      <Table.Head>Remove</Table.Head>
+    </Table.Row>
   </Table.Header>
-  <Table.Body {...$tableBodyAttrs}>
-    {#each $pageRows as row (row.id)}
-      <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-        <Table.Row {...rowAttrs}>
-          {#each row.cells as cell (cell.id)}
-            <Subscribe attrs={cell.attrs()} let:attrs>
-              <Table.Cell {...attrs}>
-                <Render of={cell.render()} />
-              </Table.Cell>
-            </Subscribe>
-          {/each}
-        </Table.Row>
-      </Subscribe>
+  <Table.Body>
+    {#each data as module}
+    <Table.Row>
+      <Table.Cell>{module.code}</Table.Cell>
+      <Table.Cell>{module.name}</Table.Cell>
+      <Table.Cell>{module.credits}</Table.Cell>
+      <Table.Cell>
+        <Button variant="destructive" on:click={() => {callback(module.id ? module.id : "")}}>Remove</Button>
+      </Table.Cell>
+    </Table.Row>
     {/each}
   </Table.Body>
 </Table.Root>
