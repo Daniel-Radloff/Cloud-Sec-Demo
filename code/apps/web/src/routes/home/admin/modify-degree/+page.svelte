@@ -42,7 +42,7 @@ import * as Command from "$lib/components/ui/command";
       <Command.Group heading={group.at(0)?.department}>
         {#each group as degree}
           <Command.Item
-            value={degree.id}
+            value={degree.code + degree.name}
             onSelect={() => {
               goto($page.url.pathname + "/" + degree.id);
             }}

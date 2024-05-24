@@ -20,16 +20,23 @@ export const addNewDegree = onCall((request) => {
   }
 });
 
-export const modifyModulesForDegree = onCall((request) => {
+export const modifyDegree = onCall((request) => {
   validateAdminClaim(request.auth);
-  const degree = universityDegreeValidator.parse(request.data);
-  const {coreModules, electiveModules} = degree;
+  const validatedDegree = universityDegreeValidator.parse(request.data);
+  const documentId = validatedDegree.id!;
+  let validDegreeObject = {...validatedDegree as any};
+  // remove unmodifiable fields
+  delete validDegreeObject.coreModuleObjects;
+  delete validDegreeObject.electiveModuleObjects;
+  delete validDegreeObject.id;
+  delete validDegreeObject.name;
+  delete validDegreeObject.code;
+  delete validDegreeObject.department
   const db = getFirestore();
+  console.log(validatedDegree);
+  console.log(validDegreeObject);
   db.collection(Collections.degrees)
-    .doc(degree.id!)
-    .update({
-      coreModules,
-      electiveModules
-    });
+    .doc(documentId)
+    .update(validDegreeObject);
 });
 

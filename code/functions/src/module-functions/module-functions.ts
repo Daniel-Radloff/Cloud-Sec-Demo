@@ -9,11 +9,9 @@ export const addModule = onCall((request) => {
   try {
     let validatedModule = moduleValidator.parse(request.data);
     // set fields that must be undefined to undefined
-    validatedModule.discontinued = undefined;
-    validatedModule.id = undefined;
-    validatedModule.prerequisiteObjects = undefined;
-    const nameSearchField = validatedModule.name.split('');
-    const codeSearchField = validatedModule.code.split('');
+    delete validatedModule.discontinued;
+    delete validatedModule.id;
+    delete validatedModule.prerequisiteObjects;
     const db = getFirestore();
     db.collection(Collections.modules).add(validatedModule);
   } catch (error) {

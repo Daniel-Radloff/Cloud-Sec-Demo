@@ -20,7 +20,7 @@
   import { page } from "$app/stores";
   import { collection, doc, getDoc, getDocs } from "firebase/firestore";
   import { goto } from "$app/navigation";
-	import AdminModuleTable from "$lib/components/ui/admin-module-table/admin-module-table.svelte";
+  import AdminModuleTable from "$lib/components/ui/admin-module-table/admin-module-table.svelte";
   import { Switch } from "$lib/components/ui/switch";
  
   export let data: PageData;
@@ -66,7 +66,7 @@
     let groupedModules:Dictionary = {};
     moduleSnapshots.docs.forEach((doc)=>{
       const validatedModule = universityModule.parse(doc.data());
-      if (!groupedModules[validatedDegree.department]) groupedModules[validatedModule.department] = []
+      if (!groupedModules[validatedModule.department]) groupedModules[validatedModule.department] = []
       groupedModules[validatedModule.department].push(validatedModule);
     });
     modules.set(Object.entries(groupedModules).map(([_,value]) => value));
@@ -78,6 +78,8 @@
     onResult({result}) {
       if (result.type != "success") return;
       const functions = getFirebaseFunctionsClient();
+      const addDegree = httpsCallable(functions, functionNames.universityDegreeFunctions.modifyDegree);
+      addDegree(stripObject($formData));
     },
   });
 
@@ -273,7 +275,7 @@
         </Command.Root>
       </Popover.Content>
     </Popover.Root>
-    <AdminModuleTable data={$degree.electiveModuleObjects} callback={coreModuleCallback}/>
+    <AdminModuleTable data={$degree.electiveModuleObjects} callback={electiveModuleCallback}/>
     <Form.Description>Semster that the module is presented in</Form.Description>
     <Form.FieldErrors />
   </Form.Field>
@@ -306,6 +308,31 @@
         {...attrs}
         bind:checked={$degree.discontinued}
       />
+    </Form.Control>
+  </Form.Field>
+  <Form.Field {form} name="id">
+    <Form.Control let:attrs>
+    <input type="hidden" value={$degree.id} name={attrs.name}/>
+    </Form.Control>
+  </Form.Field>
+  <Form.Field {form} name="id">
+    <Form.Control let:attrs>
+    <input type="hidden" value={$degree.id} name={attrs.name}/>
+    </Form.Control>
+  </Form.Field>
+  <Form.Field {form} name="name">
+    <Form.Control let:attrs>
+    <input type="hidden" value={$degree.name} name={attrs.name}/>
+    </Form.Control>
+  </Form.Field>
+  <Form.Field {form} name="code">
+    <Form.Control let:attrs>
+    <input type="hidden" value={$degree.code} name={attrs.name}/>
+    </Form.Control>
+  </Form.Field>
+  <Form.Field {form} name="department">
+    <Form.Control let:attrs>
+    <input type="hidden" value={$degree.department} name={attrs.name}/>
     </Form.Control>
   </Form.Field>
   <Form.Button>Register New Module</Form.Button>
