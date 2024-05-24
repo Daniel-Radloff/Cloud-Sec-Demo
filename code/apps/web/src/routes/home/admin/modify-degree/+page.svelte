@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Item } from "$lib/components/ui/breadcrumb";
+  import { goto } from "$app/navigation";
+	import { page } from "$app/stores";
+import { Item } from "$lib/components/ui/breadcrumb";
 import * as Command from "$lib/components/ui/command";
 	import { getFirebaseFirestoreClient } from "$lib/firebase/firebase.app";
 	import { Collections, universityDegree, type UniversityDegree } from "@cos720project/shared";
@@ -12,6 +14,7 @@ import * as Command from "$lib/components/ui/command";
   // grouped by faculty
   type Dictionary = {[key:string]: UniversityDegree[]};
   let degrees:UniversityDegree[][] = [];
+  let selectedDegree = "";
 
   const queryFirebase = async () => {
     const db = getFirebaseFirestoreClient()
@@ -38,7 +41,14 @@ import * as Command from "$lib/components/ui/command";
     {#each degrees as group}
       <Command.Group heading={group.at(0)?.department}>
         {#each group as degree}
-          <Command.Item>{"(" + degree.code + ") " + degree.name}</Command.Item>
+          <Command.Item
+            value={degree.id}
+            onSelect={() => {
+              goto($page.url.pathname + "/" + degree.id);
+            }}
+          >
+            {"(" + degree.code + ") " + degree.name}
+          </Command.Item>
         {/each}
       </Command.Group>
     {/each}

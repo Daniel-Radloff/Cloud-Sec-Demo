@@ -12,6 +12,23 @@
   let serviceUrls:string[] = [];
   let serviceNames:string[] = [];
   $: {
+    const pageInfo = Object.entries(paths)
+      .map(([path, pathdata]) => ({...pathdata,}))
+      .filter(service => service.name == $page.url.pathname)
+
+    // serviceUrls
+    if (pageInfo.length > 0) {
+      const services = pageInfo.at(0)!.nav_services;
+      serviceNames = services.map((service) => {
+        return service.slice(1)
+          .split("-")
+          .filter((word) => word !== '')
+          .map((word) => word.replace(/\w+/g, (match) => match.charAt(0).toUpperCase() + match.slice(1)))
+          .join(' ');
+      })
+      serviceUrls = services.map((service) => $page.url.pathname + service)
+    }
+
     const urls:string[] = $page.url.pathname.split('/')
       .filter((url) => url !== '');
     let tokenPath: string = "";
@@ -25,18 +42,6 @@
         href : tokenPath
       };
     })
-    const pageInfo = Object.entries(paths)
-      .map(([path, pathdata]) => ({...pathdata,}))
-      .filter(service => service.name == $page.url.pathname)
-    const services = pageInfo.at(0)!.nav_services;
-    serviceNames = services.map((service) => {
-      return service.slice(1)
-        .split("-")
-        .filter((word) => word !== '')
-        .map((word) => word.replace(/\w+/g, (match) => match.charAt(0).toUpperCase() + match.slice(1)))
-        .join(' ');
-    })
-    serviceUrls = services.map((service) => $page.url.pathname + service)
   }
 
 </script>
