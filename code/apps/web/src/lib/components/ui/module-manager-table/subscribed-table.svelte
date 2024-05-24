@@ -12,23 +12,23 @@
   const columns = table.createColumns([
     table.column({
       header : "Course",
-      accessor : (module) => {module.module?.code}
+      accessor : (module) => module.module?.code
     }),
     table.column({
       header : "Description",
-      accessor : (module) => {module.module?.description}
+      accessor : (module) => module.module?.description
     }),
     table.column({
       header : "Status",
-      accessor : (module) => {module.status}
+      accessor : (module) => module.status
     }),
     table.column({
       header : "Presentation Period",
-      accessor : (userModule) => {userModule.module!.term ? userModule.module?.term : userModule.module?.semester}
+      accessor : (userModule) => userModule.module!.term ? userModule.module?.term : userModule.module?.semester
     }),
     table.column({
       header : "Registration Date",
-      accessor : (module) => {module.registrationDate}
+      accessor : (module) => module.registrationDate
     })
   ])
   const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =

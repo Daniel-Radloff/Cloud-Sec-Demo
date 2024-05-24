@@ -5,35 +5,35 @@ import RegisterDegree from "$lib/assets/certificate-svgrepo-com.svg";
 import AddModule from "$lib/assets/module-svgrepo-com.svg";
 export const paths = {
   user_home: {
-    name: "/home",
+    name: /^\/home$/g,
     nav_services : ["/module-manager", "/support", "/student-timetable"]
   },
   admin_home: {
-    name: "/home/admin",
+    name: /^\/home\/admin$/g,
     nav_services : ["/add-degree", "/add-module", "/modify-degree"]
   },
   admin_add_degree : {
-    name: "/home/admin/add-degree",
+    name: /^\/home\/admin\/add-degree$/g,
     nav_services : ["/support"]
   },
   admin_modify_degree : {
-    name: "/home/admin/modify-degree",
+    name: /\/home\/admin\/modify-degree/g,
     nav_services : ["/support"]
   },
   admin_add_module : {
-    name: "/home/admin/add-module",
+    name: /^\/home\/admin\/add-module$/g,
     nav_services : ["/support"]
   },
   admin_modify_module : {
-    name: "/home/admin/modify-module",
+    name: /\/home\/admin\/modify-module/g,
     nav_services : ["/support"]
   },
   module_manager : {
-    name: "/home/module-manager",
+    name: /^\/home\/module-manager$/g,
     nav_services : ["/change-modules","/support"]
   },
   student_timetable : {
-    name: "/home/student-timetable",
+    name: /^\/home\/student-timetable$/g,
     nav_services : ["/support"]
   }
 }
@@ -41,12 +41,12 @@ export const UserServices:ServiceCardData[] = [
   {
     service_name : "Manage Modules",
     image_url : ManageModulesIcon,
-    href : paths.module_manager.name
+    href : "/home/module-manager"
   },
   {
     service_name : "View Timetable",
     image_url : ViewTimetableIcon,
-    href : paths.student_timetable.name
+    href : "/home/student-timetable"
   }
 ];
 
@@ -54,22 +54,22 @@ export const AdminServices:ServiceCardData[] = [
   {
     service_name : "Add Degree",
     image_url : RegisterDegree,
-    href : paths.admin_add_degree.name
+    href : "/home/admin/add-degree"
   },
   {
     service_name : "Modify Degree",
     image_url : RegisterDegree,
-    href : paths.admin_modify_degree.name
+    href : "/home/admin/modify-degree"
   },
   {
     service_name : "Add Module",
     image_url : AddModule,
-    href : paths.admin_add_module.name
+    href : "/home/admin/add-module"
   },
   {
     service_name : "Modify Module",
     image_url : AddModule,
-    href : paths.admin_modify_module.name
+    href : "/home/admin/modify-module"
   }
 ];
 

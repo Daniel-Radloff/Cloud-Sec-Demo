@@ -14,11 +14,11 @@
   $: {
     const pageInfo = Object.entries(paths)
       .map(([path, pathdata]) => ({...pathdata,}))
-      .filter(service => service.name == $page.url.pathname)
-
+      .filter(service => service.name.test($page.url.pathname))
+      .at(0);
     // serviceUrls
-    if (pageInfo.length > 0) {
-      const services = pageInfo.at(0)!.nav_services;
+    if (pageInfo) {
+      const services = pageInfo.nav_services;
       serviceNames = services.map((service) => {
         return service.slice(1)
           .split("-")
@@ -33,7 +33,7 @@
       .filter((url) => url !== '');
     let tokenPath: string = "";
 
-    crumbs = urls.map((url) => {
+    const initialCrumbs = urls.map((url) => {
       tokenPath = tokenPath + "/" + url;
       return {
         label : url.replace(/\w+/g, (match) => match.charAt(0).toUpperCase() + match.slice(1))
@@ -41,7 +41,10 @@
           .join(' '),
         href : tokenPath
       };
-    })
+    });
+    $page.route.id?.includes("[slug]") ? 
+      crumbs = initialCrumbs.slice(0,-1) : 
+      crumbs = initialCrumbs;
   }
 
 </script>
