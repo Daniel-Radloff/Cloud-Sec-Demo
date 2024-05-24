@@ -177,7 +177,7 @@
     <Form.Description>Minimum duration of the degree</Form.Description>
     <Form.FieldErrors />
   </Form.Field>
-  <Form.Field {form} name="coreModules" class="flex flex-col">
+  <Form.Fieldset {form} name="coreModules" class="flex flex-col">
     <Popover.Root bind:open={coreModulePopup} let:ids>
       <Form.Control let:attrs>
         <Form.Label>Core Modules</Form.Label>
@@ -193,8 +193,14 @@
               <!-- TODO replace with + sign -->
               <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Popover.Trigger>
-        <input hidden value={$degree.coreModules} name={attrs.name} />
       </Form.Control>
+      {#each $degree.coreModules as _, index }
+      <Form.ElementField {form} name="coreModules[{index}]">
+      <Form.Control let:attrs>
+        <input hidden value={$degree.coreModules[index]} name={attrs.name} />
+      </Form.Control>
+      </Form.ElementField>
+      {/each}
       <Popover.Content class="max-w-[600px] p-0">
         <Command.Root>
           <Command.Input placeholder="Type a command or search..."/>
@@ -227,8 +233,8 @@
     <AdminModuleTable data={$degree.coreModuleObjects} callback={coreModuleCallback}/>
     <Form.Description>Semster that the module is presented in</Form.Description>
     <Form.FieldErrors />
-  </Form.Field>
-  <Form.Field {form} name="electiveModules" class="flex flex-col">
+  </Form.Fieldset>
+  <Form.Fieldset {form} name="electiveModules" class="flex flex-col">
     <Popover.Root bind:open={electiveModulePopup} let:ids>
       <Form.Control let:attrs>
         <Form.Label>Elective Modules</Form.Label>
@@ -244,8 +250,14 @@
               <!-- TODO replace with + sign -->
               <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Popover.Trigger>
-        <input hidden value={$degree.electiveModules} name={attrs.name} />
       </Form.Control>
+      {#each $degree.electiveModules as _, index }
+      <Form.ElementField {form} name="electiveModules[{index}]">
+      <Form.Control let:attrs>
+        <input hidden value={$degree.electiveModules[index]} name={attrs.name} />
+      </Form.Control>
+      </Form.ElementField>
+      {/each}
       <Popover.Content class="max-w-[600px] p-0">
         <Command.Root>
           <Command.Input placeholder="Type a command or search..."/>
@@ -278,7 +290,7 @@
     <AdminModuleTable data={$degree.electiveModuleObjects} callback={electiveModuleCallback}/>
     <Form.Description>Semster that the module is presented in</Form.Description>
     <Form.FieldErrors />
-  </Form.Field>
+  </Form.Fieldset>
   <Form.Field {form} name="minCreditsPerSemester">
     <Form.Control let:attrs>
       <Form.Label>Minimum credit requirement per semester</Form.Label>
