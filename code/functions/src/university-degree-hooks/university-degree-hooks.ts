@@ -13,9 +13,9 @@ const notifyUsersOfModuleRemoval = async (moduleIds:string[],degreeId:string) =>
 
   const invalidDegreeQueries = moduleIds.map((moduleId) => {
     return db.collection(Collections.userDegree)
-    .where("degreeId", "==", degreeId)
-    .where("status", "==", "active")
-    .where("enrolledModules", "array-contains", {moduleId: moduleId,status:"enrolled"});
+      .where("degreeId", "==", degreeId)
+      .where("status", "==", "active")
+      .where("enrolledModules", "array-contains", {moduleId: moduleId,status:"enrolled"});
   });
   const querySnapshots = await Promise.all(invalidDegreeQueries.map((query) => query.get()));
   const invalidDegrees = querySnapshots.flatMap((snapshot) => {
@@ -31,9 +31,9 @@ const notifyUsersOfModuleRemoval = async (moduleIds:string[],degreeId:string) =>
       type : "registration",
       message : "One or more modules you are registered for have been discontinued, please update your registration information."
     }
-    let updatedModules = invalidDegree.enrolledModules.map((module) => {
+    const updatedModules = invalidDegree.enrolledModules.map((module) => {
       if (moduleIds.includes(module.moduleId)) {
-	module.status = "discontinued";
+        module.status = "discontinued";
       }
       return module;
     });
@@ -56,7 +56,7 @@ export const universityDegreeCreatedHook =
     if (!event.data) return;
     event.data.ref.update({id: event.data.id});
     console.log("Added New Degree: " + event.data.id + " to " + Collections.degrees + " collection");
-});
+  });
 
 
 export const universityDegreeUpdatedHook =
@@ -67,8 +67,8 @@ export const universityDegreeUpdatedHook =
     if (!event.data.after.exists) return;
     const db = getFirestore();
     if (event.data.before.id !== event.data.after.data().id || event.data.before.id !== event.data.after.id) {
-	event.data.after.ref.set(event.data.before.data());
-	return;
+      event.data.after.ref.set(event.data.before.data());
+      return;
     }
     if (event.data.before.data().id === undefined) {
       return;
@@ -97,9 +97,8 @@ export const universityDegreeUpdatedHook =
     }
 
     // checking if discontinued
-    if (original.discontinued === modified.discontinued) {
-    }
+    //if (original.discontinued === modified.discontinued)
 
     const reference = await db.collection("degreesBackup").add(original);
     console.log("Backup Created of " + original.code + ".degrees/" + original.id + " -> degreesBackup" + reference.id)
-});
+  });

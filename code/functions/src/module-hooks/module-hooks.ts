@@ -11,8 +11,8 @@ export const validatePrerequisites = async (potentialPrerequisites:string[][], m
   const userRegisteredDegreeBatch = db.batch();
 
   const documents = await db.collection(Collections.userDegree)
-	.where("enrolledModules", "array-contains", {moduleId : moduleId, status : "enrolled"})
-	.get()
+    .where("enrolledModules", "array-contains", {moduleId : moduleId, status : "enrolled"})
+    .get();
 
   const potentiallyInvalidDegreeRegistrations = documents.docs.map((doc) => userDegreeValidator.parse(doc));
 
@@ -23,7 +23,7 @@ export const validatePrerequisites = async (potentialPrerequisites:string[][], m
 
     return potentialPrerequisites
       .map((prerequisites) => {
-	return prerequisites.every((module) => completedModuleIds.includes(module));
+        return prerequisites.every((module) => completedModuleIds.includes(module));
       })
       .includes(true);
   });
@@ -35,9 +35,9 @@ export const validatePrerequisites = async (potentialPrerequisites:string[][], m
       type : "registration",
       message : "The prerequisites for one of the modules you are registered for has changed and you no longer are eligible to enroll, please update your registration details"
     };
-    let updatedModules = invalidDegree.enrolledModules.map((module) => {
-      if (module.moduleId = moduleId) {
-	module.status = "prerequisites not satisfied";
+    const updatedModules = invalidDegree.enrolledModules.map((module) => {
+      if (module.moduleId == moduleId) {
+        module.status = "prerequisites not satisfied";
       }
       return module;
     });
@@ -61,8 +61,8 @@ export const discontinueModule = async (moduleId:string) => {
   const userRegisteredDegreeBatch = db.batch();
 
   const documents = await db.collection(Collections.userDegree)
-	.where("enrolledModules", "array-contains", {moduleId : moduleId, status : "enrolled"})
-	.get()
+    .where("enrolledModules", "array-contains", {moduleId : moduleId, status : "enrolled"})
+    .get()
 
   const invalidDegreeRegistrations = documents.docs.map((doc) => userDegreeValidator.parse(doc));
 
@@ -73,9 +73,9 @@ export const discontinueModule = async (moduleId:string) => {
       type : "registration",
       message : "The module you have registered for has been discontinued, please update your registration information"
     };
-    let updatedModules = invalidDegree.enrolledModules.map((module) => {
-      if (module.moduleId = moduleId) {
-	module.status = "discontinued";
+    const updatedModules = invalidDegree.enrolledModules.map((module) => {
+      if (module.moduleId == moduleId) {
+        module.status = "discontinued";
       }
       return module;
     });
@@ -99,7 +99,7 @@ export const moduleCreatedHook =
     if (!event.data) return;
     event.data.ref.update({id : event.data.id});
     console.log("Added New Module: " + event.data.id + " to " + Collections.modules + " collection");
-});
+  });
 
 export const moduleUpdatedHook =
   onDocumentUpdated(Collections.modules + "/{id}", async (event) => {
@@ -109,8 +109,8 @@ export const moduleUpdatedHook =
     if (!event.data.after.exists) return;
     const db = getFirestore();
     if (event.data.before.id !== event.data.after.data().id || event.data.before.id !== event.data.after.id) {
-	event.data.after.ref.set(event.data.before.data());
-	return;
+      event.data.after.ref.set(event.data.before.data());
+      return;
     }
     if (event.data.before.data().id === undefined) {
       return;
@@ -135,4 +135,4 @@ export const moduleUpdatedHook =
 
     const reference = await db.collection("modulesBackup").add(original);
     console.log("Backup Created of " + original.code + ".modules/" + original.id + " -> modulesBackup" + reference.id)
-});
+  });

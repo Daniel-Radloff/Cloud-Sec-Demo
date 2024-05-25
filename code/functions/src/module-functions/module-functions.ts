@@ -7,7 +7,7 @@ import {validateAdminClaim} from "../helpers/validate-claim";
 export const addModule = onCall((request) => {
   validateAdminClaim(request.auth);
   try {
-    let validatedModule = moduleValidator.parse(request.data);
+    const validatedModule = moduleValidator.parse(request.data);
     // set fields that must be undefined to undefined
     delete validatedModule.discontinued;
     delete validatedModule.id;

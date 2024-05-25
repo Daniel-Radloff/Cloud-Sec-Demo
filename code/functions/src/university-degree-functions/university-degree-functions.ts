@@ -8,7 +8,7 @@ export const addNewDegree = onCall((request) => {
   // validation
   validateAdminClaim(request.auth);
   try {
-    let degree = universityDegreeValidator.parse(request.data);
+    const degree = universityDegreeValidator.parse(request.data);
     // set all potential undefined fields to undefined
     delete degree.coreModuleObjects
     delete degree.electiveModuleObjects;
@@ -25,7 +25,7 @@ export const addNewDegree = onCall((request) => {
 export const modifyDegree = onCall((request) => {
   validateAdminClaim(request.auth);
   const validatedDegree = universityDegreeValidator.parse(request.data);
-  let validDegreeObject = {...validatedDegree as any};
+  const validDegreeObject = {...validatedDegree as any};
   // remove unmodifiable fields
   delete validDegreeObject.coreModuleObjects;
   delete validDegreeObject.electiveModuleObjects;

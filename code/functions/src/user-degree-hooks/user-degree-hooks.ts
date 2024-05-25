@@ -8,4 +8,4 @@ export const userDegreeCreatedHook =
     if (!event.data) return;
     event.data.ref.update({id : event.data.id});
     console.log("Added new UserDegree: " + event.data.id + " to " + Collections.userDegree + " collection");
-});
+  });

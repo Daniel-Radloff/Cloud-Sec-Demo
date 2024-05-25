@@ -7,7 +7,7 @@ import {validateUserClaim} from "../helpers/validate-claim";
 export const createDegreeRegistration = onCall(async (request) => {
   validateUserClaim(request.auth);
   try {
-    let validatedUserDegree = userDegreeValidator.parse(request.data);
+    const validatedUserDegree = userDegreeValidator.parse(request.data);
     // set fields that must be undefined to undefined
     delete validatedUserDegree.degree;
     delete validatedUserDegree.id;
@@ -56,13 +56,13 @@ export const createDegreeRegistration = onCall(async (request) => {
 export const registerModule = onCall(async (request) => {
   validateUserClaim(request.auth);
   try {
-    let validatedRequest = userModuleFunctionDatatype.parse(request.data);
+    const validatedRequest = userModuleFunctionDatatype.parse(request.data);
     const db = getFirestore();
     const userDegreeSnapshot = await db.collection(Collections.userDegree)
       .doc(validatedRequest.userDegreeId)
       .get();
 
-      // check owner of degree
+    // check owner of degree
     if (!userDegreeSnapshot.exists) {
       console.warn("A user attempted to modify a document they do not own, and that doesn't exist: auth" + request.auth?.token.uid + " -/-> userId: " + request.auth!.uid);
       throw new HttpsError("invalid-argument", "Incongruent userId provided: auth token and userId do not match");

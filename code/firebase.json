@@ -5,8 +5,9 @@
   },
   "functions": [
     {
-      "source": "functions",
+      "source": "./functions",
       "codebase": "default",
+      "isolate": true,
       "ignore": [
         "node_modules",
         ".git",
@@ -20,17 +21,6 @@
       ]
     }
   ],
-  "hosting": {
-    "source": "apps/web",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "frameworksBackend": {
-      "region": "us-central1"
-    }
-  },
   "emulators": {
     "auth": {
       "port": 9099
@@ -48,5 +38,17 @@
       "enabled": true
     },
     "singleProjectMode": true
+  },
+  "hosting": {
+    "source": "./apps/web",
+    "isolate": true,
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "frameworksBackend": {
+      "region": "us-central1"
+    }
   }
 }

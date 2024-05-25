@@ -36,9 +36,9 @@ functions.auth.user().onCreate(async (user) => {
 
 export const authBeforeCreated = functions.auth.user().beforeCreate((user,context) => {
   console.log(user + " " + context);
-  if (!user.email!.includes('@tuks.co.za')) throw new HttpsError('invalid-argument', "Unauthorized email");
+  if (!user.email!.includes("@tuks.co.za")) throw new HttpsError("invalid-argument", "Unauthorized email");
 });
 
 export const authBeforeSignin = functions.auth.user().beforeSignIn((event) => {
-  if (!event.email!.includes('@tuks.co.za')) throw new HttpsError('invalid-argument', "Unauthorized email");
+  if (!event.email!.includes("@tuks.co.za")) throw new HttpsError("invalid-argument", "Unauthorized email");
 });

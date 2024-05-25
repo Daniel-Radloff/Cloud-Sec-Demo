@@ -4,7 +4,10 @@
     "dotenv-cli": "^7.4.2"
   },
   "scripts": {
-    "build" : "dotenv -- turbo run build",
-    "emulators" : "dotenv -e .env.dev -- firebase emulators:start --only functions,auth,firestore"
+    "build": "dotenv -- turbo run build",
+    "emulators": "dotenv -e .env.dev -- firebase emulators:start --only functions,auth,firestore"
+  },
+  "devDependencies": {
+    "firebase-tools-with-isolate": "^13.9.0"
   }
 }

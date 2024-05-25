@@ -40,11 +40,11 @@ export const adminUserCollectionUpdateHook =
     console.log(adminAccount);
     adminAccount.forEach(doc => {
       if (doc.exists) {
-	const adminClaim = {
-	  admin : true,
-	  accessLevel : 2
-	};
-	Promise.resolve(getAuth().setCustomUserClaims(doc.id,adminClaim));
+        const adminClaim = {
+          admin : true,
+          accessLevel : 2
+        };
+        Promise.resolve(getAuth().setCustomUserClaims(doc.id,adminClaim));
       }
     })
   });
