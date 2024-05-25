@@ -7,13 +7,14 @@
 	import SubscribedTable from "./subscribed-table.svelte";
 	import SkeletonTable from "./skeleton-table.svelte";
 
-  export let data: Readable<UserRegisteredModule[]>|undefined = undefined;
+  export let data: UserRegisteredModule[]|undefined = undefined;
+  export let callback:(index:number) => void = (index:number) => {};
   export let adminView: boolean = false;
 </script>
 
 <div class="h-80vh overflow-y-auto">
   {#if data}
-    <SubscribedTable data={data} adminView={adminView}/>
+    <SubscribedTable data={data} callback={callback}/>
   {:else}
     <SkeletonTable adminView={adminView}/>
   {/if}

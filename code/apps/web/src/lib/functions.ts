@@ -28,6 +28,7 @@ export const awaitStore = async (store:Writable<unknown|undefined>|Readable<unkn
   return true;
 };
 
+
 export const loadDegreeStore = async (uid:string) => {
   if (!browser) return;
   // get all the degrees that the user has
@@ -39,9 +40,12 @@ export const loadDegreeStore = async (uid:string) => {
   const userRegisteredDegreesSnap = await getDocs(userRegisteredDegreesReference);
 
   // eslint-disable-next-line
-  let validatedUserDegrees = userRegisteredDegreesSnap.docs.map((degree) =>
-    registeredDegreeValidator.parse(degree.data())
-  );
+  let validatedUserDegrees = userRegisteredDegreesSnap.docs.map((degree) => {
+    const degreedata = degree.data();
+    degreedata.enrollmentDate = degreedata.enrollmentDate.toDate();
+    degreedata.expectedGraduationDate = degreedata.expectedGraduationDate.toDate();
+    return registeredDegreeValidator.parse(degreedata)
+});
 
   userDegrees.set(validatedUserDegrees);
 

@@ -5,7 +5,7 @@ service cloud.firestore {
       allow read,write,delete: if false;
     }
     match /adminUsers/{userId} {
-      allow read: if request.auth != null && 
+      allow read: if request.auth != null &&
         request.auth.token.isSuper == true &&
         request.resourece.data.keys() == ['name', 'email', 'privilage'] &&
         request.resource.data.privilage in ['admin','superuser'];
@@ -19,7 +19,7 @@ service cloud.firestore {
     match /modules/{module} {
       allow read;
     }
-    match /userDegree/{degree} {
+    match /userDegrees/{degree} {
       allow read: if resource.data.userId == request.auth.uid;
     }
   }

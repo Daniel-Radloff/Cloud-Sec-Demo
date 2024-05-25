@@ -1,69 +1,42 @@
 <script lang="ts">
   import type { UserRegisteredModule,UniversityModule } from "@cos720project/shared";
-  import {createTable,Render, Subscribe}  from "svelte-headless-table";
-  import type { Readable } from "svelte/store";
+  import {createRender, createTable,Render, Subscribe}  from "svelte-headless-table";
+  import { readable, type Readable } from "svelte/store";
   import * as Table from "$lib/components/ui/table";
-	import { UndoIcon } from "lucide-svelte";
+	import { DeleteIcon } from "lucide-svelte";
+  import { Button } from "$lib/components/ui/button/index";
 
-  export let data: Readable<UserRegisteredModule[]>;
-  export let adminView: boolean = false;
-  const table = createTable(data);
+  export let data: UserRegisteredModule[] = [];
+  export let callback:(index:number) => void;
 
-  const columns = table.createColumns([
-    table.column({
-      header : "Course",
-      accessor : (module) => module.module?.code
-    }),
-    table.column({
-      header : "Description",
-      accessor : (module) => module.module?.description
-    }),
-    table.column({
-      header : "Status",
-      accessor : (module) => module.status
-    }),
-    table.column({
-      header : "Presentation Period",
-      accessor : (userModule) => userModule.module!.term ? userModule.module?.term : userModule.module?.semester
-    }),
-    table.column({
-      header : "Registration Date",
-      accessor : (module) => module.registrationDate
-    })
-  ])
-  const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =
-    table.createViewModel(columns);
 </script>
 
-<Table.Root {...$tableAttrs}>
+<Table.Root>
   <Table.Header>
-    {#each $headerRows as headerRow}
-      <Subscribe rowAttrs={headerRow.attrs()}>
-        <Table.Row>
-          {#each headerRow.cells as cell (cell.id)}
-            <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
-              <Table.Head {...attrs}>
-                <Render of={cell.render()} />
-              </Table.Head>
-            </Subscribe>
-          {/each}
-        </Table.Row>
-      </Subscribe>
-    {/each}
+    <Table.Row>
+      <Table.Head>Module Name</Table.Head>
+      <Table.Head>Code</Table.Head>
+      <Table.Head>Credits</Table.Head>
+      <Table.Head>Status</Table.Head>
+      <!-- <Table.Head>Prerequisites</Table.Head> -->
+      <Table.Head>Deregister</Table.Head>
+    </Table.Row>
   </Table.Header>
-  <Table.Body {...$tableBodyAttrs}>
-    {#each $pageRows as row (row.id)}
-      <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-        <Table.Row {...rowAttrs}>
-          {#each row.cells as cell (cell.id)}
-            <Subscribe attrs={cell.attrs()} let:attrs>
-              <Table.Cell {...attrs}>
-                <Render of={cell.render()} />
-              </Table.Cell>
-            </Subscribe>
-          {/each}
-        </Table.Row>
-      </Subscribe>
+  <Table.Body>
+    {#each data as module, index}
+    <Table.Row>
+      <Table.Cell>{module.module?.name}</Table.Cell>
+      <Table.Cell>{module.module?.code}</Table.Cell>
+      <Table.Cell>{module.module?.credits}</Table.Cell>
+      <Table.Cell>{module.status}</Table.Cell>
+      <Table.Cell>
+        {#if module.status = "enrolled"}
+          <Button variant="destructive" on:click={() => {callback(index)}}>Deregister</Button>
+        {:else}
+          <Button variant="default" disabled>Registration Ended</Button>
+        {/if}
+      </Table.Cell>
+    </Table.Row>
     {/each}
   </Table.Body>
 </Table.Root>

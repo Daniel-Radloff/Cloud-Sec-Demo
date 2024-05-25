@@ -1,4 +1,3 @@
-
 <script lang="ts">
   import type { UniversityModule } from "@cos720project/shared";
   import {createRender, createTable,Render, Subscribe}  from "svelte-headless-table";
