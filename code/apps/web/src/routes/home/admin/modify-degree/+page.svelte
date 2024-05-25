@@ -9,12 +9,10 @@ import * as Command from "$lib/components/ui/command";
 	import { onMount } from "svelte";
 	import { writable } from "svelte/store";
 
-  let timer:NodeJS.Timeout;
   let searchWord = writable("");
   // grouped by faculty
   type Dictionary = {[key:string]: UniversityDegree[]};
   let degrees:UniversityDegree[][] = [];
-  let selectedDegree = "";
 
   const queryFirebase = async () => {
     const db = getFirebaseFirestoreClient()

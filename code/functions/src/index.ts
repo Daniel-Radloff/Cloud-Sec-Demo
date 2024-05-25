@@ -1,4 +1,4 @@
-import * as firebase from "firebase-admin";
+import {initializeApp} from "firebase-admin/app";
 import * as adminUserHooks  from "./adminuser-hooks/adminuser-hooks";
 import * as metadataHooks from "./metadata-hooks/metadata-hooks";
 import * as moduleFunctions from "./module-functions/module-functions";
@@ -16,7 +16,7 @@ import * as userDegreeHooks from "./user-degree-hooks/user-degree-hooks";
 //   response.send("Hello from Firebase!");
 // });
 
-firebase.initializeApp();
+initializeApp();
 
 export {
   adminUserHooks,

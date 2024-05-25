@@ -1,5 +1,5 @@
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
-import {Collections, UniversityDegree, UserRegisteredModule, universityModule, userRegisteredDegree as userDegreeValidator, userModuleFunctionDatatype, userRegisteredDegree} from "@cos720project/shared";
+import {Collections, UniversityDegree, UserRegisteredModule, universityModule, userRegisteredDegree as userDegreeValidator, userModuleFunctionDatatype} from "@cos720project/shared";
 import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {validateUserClaim} from "../helpers/validate-claim";
 

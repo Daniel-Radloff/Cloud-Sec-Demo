@@ -11,6 +11,7 @@
   } from 'sveltekit-superforms';
   import {GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup} from "firebase/auth";
   import { getFirebaseAuthClient } from '$lib/firebase/firebase.app';
+	import { toast } from 'svelte-sonner';
 
   export let data: SuperValidated<Infer<LoginFormSchema>>;
   let oauthTokenForm: HTMLFormElement;
@@ -42,16 +43,15 @@
   //restict to UP domains only
   const handleOAuth = async () => {
     const auth = getFirebaseAuthClient();
-    await signInWithPopup(auth,new GoogleAuthProvider)
-      .then(async (result) => {
-        const token = await result.user.getIdToken();
-        oauthTokenInput.value = token;
-        oauthTokenForm.submit();
-      })
-      .catch((error) => {
-        console.log(error);
-        return error;
-      })
+    try {
+      const result = await signInWithPopup(auth,new GoogleAuthProvider)
+      console.log(result);
+      const token = await result.user.getIdToken();
+      oauthTokenInput.value = token;
+      oauthTokenForm.submit();
+    } catch(error) {
+        toast("Oops, please sign in with a UP account");
+    }
   };
 
   const form = superForm(data, {
