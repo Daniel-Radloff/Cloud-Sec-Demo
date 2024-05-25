@@ -109,7 +109,10 @@
       current.at(degreeIndex)!.enrolledModules.push(newModule);
       return current;
     });
-    await registerModule(stripObject($userDegrees.at(degreeIndex)!));
+    await registerModule({
+      userDegreeId : $userDegrees[degreeIndex].id!,
+      moduleId : module.id,
+    });
     registerDialog = false;
     toast("Module Registered!");
   }

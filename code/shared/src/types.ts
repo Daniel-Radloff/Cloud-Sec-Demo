@@ -41,7 +41,7 @@ export const testDate = z.object({
     name : z.string(),
     date : firebaseDate,
 });
-export const deregisterUserModuleFunctionDatatype = z.object({
+export const userModuleFunctionDatatype = z.object({
   userDegreeId : z.string(),
   moduleId : z.string()
 });
