@@ -35,6 +35,10 @@
         userAuthInfo.set(undefined);
         userMetadata.set(undefined);
         userDegrees.set([]);
+        fetch("/logout",{
+          method: 'POST',
+          credentials : 'same-origin'
+        });
       }
     })
   })

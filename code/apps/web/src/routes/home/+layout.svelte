@@ -2,6 +2,9 @@
   import * as Breadcrumb from "$lib/components/ui/breadcrumb/index.js";
   import {page} from '$app/stores';
 	import { UserServices, paths } from "$lib/app-constants";
+	import Button from "$lib/components/ui/button/button.svelte";
+	import { getFirebaseAuthClient } from "$lib/firebase/firebase.app";
+	import { goto } from "$app/navigation";
 
   type Crumb = {
     label : string,
@@ -46,6 +49,13 @@
       crumbs = initialCrumbs.slice(0,-1) : 
       crumbs = initialCrumbs;
   }
+  const logout = () => {
+    const auth = getFirebaseAuthClient();
+    auth.signOut();
+    setTimeout(() => {
+      goto("/");
+    },300)
+  }
 
 </script>
 
@@ -74,6 +84,7 @@
       {#each serviceUrls as _, count}
       <a href={serviceUrls[count]}>{serviceNames[count]}</a>
       {/each}
+      <Button variant="ghost" on:click={logout}>Logout</Button>
     </nav>
   </div>
 </div>

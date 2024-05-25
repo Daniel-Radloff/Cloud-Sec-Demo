@@ -26,7 +26,7 @@ export const actions = {
             console.error(error);
             throw redirect(303, "/");
         }
-        cookies.set("__session", sessionCookie, {
+        cookies.set("session", sessionCookie, {
             secure:true,
             maxAge: ttl/1000,
             path: "/",
