@@ -27,6 +27,21 @@
   // data 
   let moduleSelectionFlag = false;
   const moduleSelection:Writable<UniversityModule[][]> = writable([]);
+  const filteredModuleSelection:Readable<UniversityModule[][]> = derived(
+    [userDegrees,moduleSelection],
+    ([$userDegrees,$moduleSelection]) => {
+      let toReturn:UniversityModule[][] = [];
+      $moduleSelection.forEach((group,index) => {
+        // filter all modules that are not already registered
+        toReturn.push(group
+          .filter((module) => 
+            $userDegrees.at(index)?.enrolledModules
+              .every((enrolledModule) => enrolledModule.moduleId != module.id)
+          )
+        );
+      })
+      return toReturn;
+  },[]);
   userDegrees.subscribe(() => {
     if (moduleSelectionFlag) return;
     clearTimeout(timer);
@@ -46,8 +61,10 @@
     };
     const coreModules = await Promise.all(selectedDegree!.degree!.coreModules.map(fetchFunction));
     const electiveModules = await Promise.all(selectedDegree!.degree!.electiveModules.map(fetchFunction));
+    // TODO intersection of already registered
     return [coreModules,electiveModules].flat()
   }
+
   const degregister = (index:number) =>{};
   // TODO: If 0 degrees registered then message
   onMount(async () => {
@@ -78,6 +95,7 @@
       return current;
     });
     await registerModule(stripObject($userDegrees.at(degreeIndex)!));
+    registerDialog = false;
     toast("Module Registered!");
   }
 </script>
@@ -116,7 +134,7 @@
   <Command.List>
     <Command.Empty>No results found.</Command.Empty>
     <Command.Group heading="Suggestions">
-      {#each $moduleSelection[degreeIndex] as module}
+      {#each $filteredModuleSelection[degreeIndex] as module}
         <Command.Item
         onSelect={() => {registerModule(module)}}
         >
