@@ -23,6 +23,7 @@
 		"@typescript-eslint/eslint-plugin": "^7.0.0",
 		"@typescript-eslint/parser": "^7.0.0",
 		"autoprefixer": "^10.4.18",
+		"@cos720project/shared": "workspace:*",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.35.1",
@@ -40,7 +41,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@cos720project/shared": "workspace:*",
 		"@faker-js/faker": "^8.4.1",
 		"bits-ui": "^0.19.7",
 		"clsx": "^2.1.0",

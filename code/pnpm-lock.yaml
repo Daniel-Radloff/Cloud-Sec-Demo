@@ -18,9 +18,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@cos720project/shared':
-        specifier: workspace:*
-        version: link:../../shared
       '@faker-js/faker':
         specifier: ^8.4.1
         version: 8.4.1
@@ -73,6 +70,9 @@ importers:
         specifier: ^3.22.4
         version: 3.23.7
     devDependencies:
+      '@cos720project/shared':
+        specifier: workspace:*
+        version: link:../../shared
       '@playwright/test':
         specifier: ^1.28.1
         version: 1.44.0

@@ -44,7 +44,8 @@
   const handleOAuth = async () => {
     const auth = getFirebaseAuthClient();
     try {
-      const result = await signInWithPopup(auth,new GoogleAuthProvider())
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth,provider);
       console.log(result);
       const token = await result.user.getIdToken();
       oauthTokenInput.value = token;
