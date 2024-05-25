@@ -57,7 +57,13 @@ export type UniversityModule = z.infer<typeof universityModule>;
 export const userRegisteredModule = z.object({
     moduleId : z.string(),
     module : universityModule.optional(),
-    registrationDate : z.coerce.date(),
+    registrationDate : z.union([
+      z.coerce.date(),
+      z.object({
+	seconds : z.number(),
+	nanoseconds : z.number()
+      }).transform((arg=> new Date(arg.seconds)))
+    ]),
     status : z.union([
         z.literal("enrolled"),
         z.literal("completed"),

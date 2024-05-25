@@ -21,7 +21,7 @@ export const createDegreeRegistration = onCall(async (request) => {
       throw new HttpsError("invalid-argument", "An invalid degree id was provided");
     }
     if (request.auth!.token.uid != validatedUserDegree.userId) {
-      console.warn("A user attempted to register for someone elses user id: auth" + request.auth?.token.uid + " -/-> userId: " + validatedUserDegree.userId);
+      console.warn("A user attempted to create a document with a dangling user id: auth" + request.auth?.token.uid + " -/-> userId: " + validatedUserDegree.userId);
       throw new HttpsError("invalid-argument", "Incongruent userId provided: auth token and userId do not match");
     }
     const degreeDuration = (degreeSnapshot.data() as UniversityDegree).duration;
@@ -34,6 +34,39 @@ export const createDegreeRegistration = onCall(async (request) => {
     validatedUserDegree.expectedGraduationDate
       .setFullYear(validatedUserDegree.enrollmentDate.getFullYear() + degreeDuration);
     db.collection(Collections.userDegree).add(validatedUserDegree);
+  } catch (error) {
+    if (error instanceof HttpsError) throw error;
+    console.log(error);
+    throw new HttpsError("invalid-argument","The parameters passed with this request are invalid.")
+  }
+});
+
+
+export const registerModule = onCall(async (request) => {
+  validateUserClaim(request.auth);
+  try {
+    let validatedUserDegree = userDegreeValidator.parse(request.data);
+    if (request.auth!.uid != validatedUserDegree.userId) {
+      console.warn("A user attempted to modify a document they do not own: auth" + request.auth?.token.uid + " -/-> userId: " + validatedUserDegree.userId);
+      throw new HttpsError("invalid-argument", "Incongruent userId provided: auth token and userId do not match");
+    }
+    // TODO validate checks
+    const db = getFirestore();
+    db.collection(Collections.userDegree)
+      .doc(validatedUserDegree.id!)
+      .update({ enrolledModules : validatedUserDegree.enrolledModules})
+  } catch (error) {
+    if (error instanceof HttpsError) throw error;
+    console.log(error);
+    throw new HttpsError("invalid-argument","The parameters passed with this request are invalid.")
+  }
+});
+
+export const degregisterModule = onCall(async (request) => {
+  validateUserClaim(request.auth);
+  try {
+    //let validatedUserDegree = userDegreeValidator.parse(request.data);
+
   } catch (error) {
     if (error instanceof HttpsError) throw error;
     console.log(error);

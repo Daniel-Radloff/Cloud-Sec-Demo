@@ -93,6 +93,7 @@ export const functionNames = {
     modifyDegree : "universityDegreeFunctions-modifyDegree"
   },
   userDegreeFunctions : {
-    registerDegree : "userDegreeFunctions-createDegreeRegistration"
+    registerDegree : "userDegreeFunctions-createDegreeRegistration",
+    registerModule : "userDegreeFunctions-registerModule"
   }
 }

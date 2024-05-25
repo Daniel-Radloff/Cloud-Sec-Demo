@@ -23,6 +23,7 @@
     </Table.Row>
   </Table.Header>
   <Table.Body>
+    {#key data}
     {#each data as module, index}
     <Table.Row>
       <Table.Cell>{module.module?.name}</Table.Cell>
@@ -38,5 +39,6 @@
       </Table.Cell>
     </Table.Row>
     {/each}
+    {/key}
   </Table.Body>
 </Table.Root>
