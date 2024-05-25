@@ -9,10 +9,11 @@
   import { writable } from "svelte/store";
   import * as AlertDialog from "$lib/components/ui/alert-dialog";
   import { toast } from "svelte-sonner";
-  import { httpsCallable } from "firebase/functions";
+  import { httpsCallable, type HttpsCallableResult } from "firebase/functions";
   import { functionNames } from "$lib/app-constants";
   import { stripObject } from "$lib/functions";
 	import { userAuthInfo } from "../../../stores";
+	import { FirebaseError } from "firebase/app";
 
   let searchWord = writable("");
   // grouped by faculty
@@ -28,6 +29,7 @@
     searchDegreesSnapshot.forEach((degree) => {
       if (!degree.exists()) return
       const typedDegree = degree.data() as UniversityDegree;
+      if (typedDegree.discontinued) return;
       if (!groupedDocuments[typedDegree.department]) groupedDocuments[typedDegree.department] = []
       groupedDocuments[typedDegree.department].push(typedDegree);
     });
@@ -46,9 +48,15 @@
       userId : $userAuthInfo!.uid,
     };
     const registerDegree = httpsCallable(functions, functionNames.userDegreeFunctions.registerDegree);
-    await registerDegree(stripObject(userRegistration));
-    toast("Degree Registration Success! You can fill out your module registration in the module manager")
-    goto("/home");
+    try {
+      await registerDegree(stripObject(userRegistration));
+      toast("Degree Registration Success! You can fill out your module registration in the module manager")
+      goto("/home");
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        toast(error.message);
+      }
+    }
   };
   onMount(() => {queryFirebase()});
 </script>

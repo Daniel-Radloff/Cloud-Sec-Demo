@@ -20,11 +20,22 @@ export const createDegreeRegistration = onCall(async (request) => {
       console.warn("A user provided degreeId does not exist, this is an anomaly, monitor behavior of this account: " + request.auth?.uid);
       throw new HttpsError("invalid-argument", "An invalid degree id was provided");
     }
-    if (request.auth!.token.uid != validatedUserDegree.userId) {
+    if (request.auth!.uid != validatedUserDegree.userId) {
       console.warn("A user attempted to create a document with a dangling user id: auth" + request.auth?.token.uid + " -/-> userId: " + request.auth!.uid);
       throw new HttpsError("invalid-argument", "Incongruent userId provided: auth token and userId do not match");
     }
-    const degreeDuration = (degreeSnapshot.data() as UniversityDegree).duration;
+    const degree = degreeSnapshot.data() as UniversityDegree;
+    if (degree.discontinued) {
+      console.warn("A user attempted to register for a discontinued degree id: auth" + request.auth?.token.uid + " -/-> userId: " + request.auth!.uid);
+      throw new HttpsError("invalid-argument", "Cannot register for discontinued degree");
+    }
+    const userDegreeSnapshots = await db.collection(Collections.userDegree)
+      .where("userId", "==", request.auth!.uid)
+      .get();
+    userDegreeSnapshots.docs.forEach((doc) => {
+      if (doc.data().degreeId == validatedUserDegree.degreeId) throw new HttpsError("already-exists","You have already registered for this degree");
+    })
+    const degreeDuration = degree.duration;
     // overwrite variables
     validatedUserDegree.completedCredits = 0;
     validatedUserDegree.enrolledModules = [];
@@ -74,6 +85,11 @@ export const registerModule = onCall(async (request) => {
     if (!moduleSnapshot.exists) throw new HttpsError("not-found", "Module not found");
     const module = universityModule.parse(moduleSnapshot.data());
 
+    // check that module is not discontinued
+    if (module.discontinued) {
+      console.warn("A user attempted to register for a discontinued module: auth" + request.auth?.token.uid + " -/-> userId: " + request.auth?.uid);
+      throw new HttpsError("invalid-argument", "You cannot register for discontinued modules");
+    }
     // pre-requisites
     const completedModules = userDegree.enrolledModules
       .filter((module) => {module.status == "completed"})

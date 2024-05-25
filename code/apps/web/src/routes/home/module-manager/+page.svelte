@@ -109,11 +109,11 @@
       current.at(degreeIndex)!.enrolledModules.push(newModule);
       return current;
     });
+    registerDialog = false;
     await registerModule({
       userDegreeId : $userDegrees[degreeIndex].id!,
       moduleId : module.id,
     });
-    registerDialog = false;
     toast("Module Registered!");
   }
 </script>
@@ -129,7 +129,7 @@
 </Tabs.Root>
 {:else} 
 <Tabs.Root value="0" class="w-4/5 h-4/5">
-  <Tabs.List class="grid w-full">
+  <Tabs.List class=" w-full">
   {#each $userDegrees as degree,count}
     {#if degree.degree}
       <Tabs.Trigger on:click={() => degreeIndex = count} value={count.toString()}>{degree.degree?.name}</Tabs.Trigger>
