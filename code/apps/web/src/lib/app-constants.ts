@@ -35,6 +35,10 @@ export const paths = {
   student_timetable : {
     name: /^\/home\/student-timetable$/g,
     nav_services : ["/support"]
+  },
+  apply_for_degree : {
+    name : /^\/home\/apply-for-degree$/g,
+    nav_services : ["/support"]
   }
 }
 export const UserServices:ServiceCardData[] = [
@@ -47,6 +51,11 @@ export const UserServices:ServiceCardData[] = [
     service_name : "View Timetable",
     image_url : ViewTimetableIcon,
     href : "/home/student-timetable"
+  },
+  {
+    service_name : "Apply For Degree",
+    image_url : RegisterDegree,
+    href : "/home/apply-for-degree"
   }
 ];
 
@@ -83,4 +92,7 @@ export const functionNames = {
     addDegree : "universityDegreeFunctions-addNewDegree",
     modifyDegree : "universityDegreeFunctions-modifyDegree"
   },
+  userDegreeFunctions : {
+    registerDegree : "userDegreeFunctions-createDegreeRegistration"
+  }
 }

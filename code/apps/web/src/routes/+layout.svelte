@@ -6,6 +6,7 @@
 	import { onDestroy, onMount } from "svelte";
   import { Collections, userMetadata as userMetadataValidate } from '@cos720project/shared';
 	import { doc, getDoc } from "firebase/firestore";
+	import { Toaster } from "svelte-sonner";
 
   onMount(() => {
     const auth = getFirebaseAuthClient();
@@ -38,5 +39,5 @@
     })
   })
 </script>
-
+<Toaster/>
 <slot />

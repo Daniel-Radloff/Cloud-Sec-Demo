@@ -10,9 +10,11 @@ export const addNewDegree = onCall((request) => {
   try {
     let degree = universityDegreeValidator.parse(request.data);
     // set all potential undefined fields to undefined
-    degree.coreModuleObjects = undefined;
-    degree.electiveModuleObjects = undefined;
-    degree.id = undefined;
+    delete degree.coreModuleObjects
+    delete degree.electiveModuleObjects;
+    delete degree.id;
+    degree.coreModules = [];
+    degree.electiveModules = [];
     const db = getFirestore();
     db.collection(Collections.degrees).add(degree);
   } catch (e) {
@@ -23,7 +25,6 @@ export const addNewDegree = onCall((request) => {
 export const modifyDegree = onCall((request) => {
   validateAdminClaim(request.auth);
   const validatedDegree = universityDegreeValidator.parse(request.data);
-  const documentId = validatedDegree.id!;
   let validDegreeObject = {...validatedDegree as any};
   // remove unmodifiable fields
   delete validDegreeObject.coreModuleObjects;
@@ -36,7 +37,7 @@ export const modifyDegree = onCall((request) => {
   console.log(validatedDegree);
   console.log(validDegreeObject);
   db.collection(Collections.degrees)
-    .doc(documentId)
+    .doc(validatedDegree.id!)
     .update(validDegreeObject);
 });
 

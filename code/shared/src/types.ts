@@ -13,16 +13,16 @@ export type ServiceCardData = {
 
 // University Information
 export const registrationDates = z.object({
-    newStudentRegistrationDeadline : z.date(),
-    returningStudentRegistrationDeadline : z.date(),
+    newStudentRegistrationDeadline : z.coerce.date(),
+    returningStudentRegistrationDeadline : z.coerce.date(),
     moduleRegistrationDeadlines : z.array(z.union([
         z.object({
             semester : z.number().int().min(1).max(2),
-            date : z.date()
+            date : z.coerce.date()
         }),
         z.object({
             term : z.number().int().min(1).max(4),
-            date : z.date()
+            date : z.coerce.date()
         })
     ]))
 })
@@ -31,7 +31,7 @@ export type RegistrationDates = z.infer<typeof registrationDates>;
 // Test Date
 export const testDate = z.object({
     name : z.string(),
-    date : z.date(),
+    date : z.coerce.date(),
 });
 // Modules
 const universityModulePre = z.object({
@@ -57,7 +57,7 @@ export type UniversityModule = z.infer<typeof universityModule>;
 export const userRegisteredModule = z.object({
     moduleId : z.string(),
     module : universityModule.optional(),
-    registrationDate : z.date(),
+    registrationDate : z.coerce.date(),
     status : z.union([
         z.literal("enrolled"),
         z.literal("completed"),
@@ -77,9 +77,7 @@ export type UserRegisteredModule = z.infer<typeof userRegisteredModule>;
 export const universityDegree = z.object({
     id : z.string().optional(),
     name : z.string().min(8),
-    nameSearchField : z.array(z.string()).optional(),
     code : z.string().min(2),
-    codeSearchField : z.array(z.string()).optional(),
     department : z.string().min(3),
     duration : z.number().int().max(7).min(1),
     description : z.string().min(10),
@@ -99,8 +97,8 @@ export const userRegisteredDegree = z.object({
     degreeId : z.string(),
     degree : universityDegree.optional(),
     userId : z.string(),
-    enrollmentDate : z.date(),
-    expectedGraduationDate : z.string(),
+    enrollmentDate : z.coerce.date(),
+    expectedGraduationDate : z.coerce.date(),
     status : z.union([z.literal("active"), z.literal("completed"), z.literal("failed")]),
     enrolledModules : z.array(userRegisteredModule),
     completedCredits : z.number().int().nonnegative()
@@ -115,7 +113,7 @@ export const personalInformation = z.object({
     gender: z.union([z.literal("male"), z.literal("female"), z.string({
         invalid_type_error: "Gender must be characters"
     })]),
-    dateOfBirth: z.date(),
+    dateOfBirth: z.coerce.date(),
     address: z.object({
         street : z.string().regex(streetNameRegex, "Invalid Street name format"),
         appartmentNumber: z.string().optional(),
