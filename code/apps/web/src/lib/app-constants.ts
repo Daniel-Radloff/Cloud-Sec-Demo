@@ -94,6 +94,7 @@ export const functionNames = {
   },
   userDegreeFunctions : {
     registerDegree : "userDegreeFunctions-createDegreeRegistration",
-    registerModule : "userDegreeFunctions-registerModule"
+    registerModule : "userDegreeFunctions-registerModule",
+    deregisterModule : "userDegreeFunctions-deregisterModule"
   }
 }

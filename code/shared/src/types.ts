@@ -11,18 +11,26 @@ export type ServiceCardData = {
   href : string
 };
 
+const firebaseDate = z.union([
+  z.coerce.date(),
+  z.object({
+    seconds : z.number(),
+    nanoseconds : z.number()
+  }).transform((arg=> new Date(arg.seconds)))
+]);
+
 // University Information
 export const registrationDates = z.object({
-    newStudentRegistrationDeadline : z.coerce.date(),
-    returningStudentRegistrationDeadline : z.coerce.date(),
+    newStudentRegistrationDeadline : firebaseDate,
+    returningStudentRegistrationDeadline : firebaseDate,
     moduleRegistrationDeadlines : z.array(z.union([
         z.object({
             semester : z.number().int().min(1).max(2),
-            date : z.coerce.date()
+            date : firebaseDate
         }),
         z.object({
             term : z.number().int().min(1).max(4),
-            date : z.coerce.date()
+            date : firebaseDate
         })
     ]))
 })
@@ -31,7 +39,11 @@ export type RegistrationDates = z.infer<typeof registrationDates>;
 // Test Date
 export const testDate = z.object({
     name : z.string(),
-    date : z.coerce.date(),
+    date : firebaseDate,
+});
+export const deregisterUserModuleFunctionDatatype = z.object({
+  userDegreeId : z.string(),
+  moduleId : z.string()
 });
 // Modules
 const universityModulePre = z.object({
@@ -58,7 +70,7 @@ export const userRegisteredModule = z.object({
     moduleId : z.string(),
     module : universityModule.optional(),
     registrationDate : z.union([
-      z.coerce.date(),
+      firebaseDate,
       z.object({
 	seconds : z.number(),
 	nanoseconds : z.number()
@@ -103,8 +115,8 @@ export const userRegisteredDegree = z.object({
     degreeId : z.string(),
     degree : universityDegree.optional(),
     userId : z.string(),
-    enrollmentDate : z.coerce.date(),
-    expectedGraduationDate : z.coerce.date(),
+    enrollmentDate : firebaseDate,
+    expectedGraduationDate : firebaseDate,
     status : z.union([z.literal("active"), z.literal("completed"), z.literal("failed")]),
     enrolledModules : z.array(userRegisteredModule),
     completedCredits : z.number().int().nonnegative()
@@ -119,7 +131,7 @@ export const personalInformation = z.object({
     gender: z.union([z.literal("male"), z.literal("female"), z.string({
         invalid_type_error: "Gender must be characters"
     })]),
-    dateOfBirth: z.coerce.date(),
+    dateOfBirth: firebaseDate,
     address: z.object({
         street : z.string().regex(streetNameRegex, "Invalid Street name format"),
         appartmentNumber: z.string().optional(),

@@ -3,12 +3,12 @@
   import {createTable,Render, Subscribe}  from "svelte-headless-table";
   import type { Readable } from "svelte/store";
   import * as Table from "$lib/components/ui/table";
-	import { UndoIcon } from "lucide-svelte";
-	import SubscribedTable from "./subscribed-table.svelte";
-	import SkeletonTable from "./skeleton-table.svelte";
+  import { UndoIcon } from "lucide-svelte";
+  import SubscribedTable from "./subscribed-table.svelte";
+  import SkeletonTable from "./skeleton-table.svelte";
 
   export let data: UserRegisteredModule[]|undefined = undefined;
-  export let callback:(index:number) => void = (index:number) => {};
+  export let callback:(moduleId:string) => void = (moduleId:string) => {};
   export let adminView: boolean = false;
 </script>
 

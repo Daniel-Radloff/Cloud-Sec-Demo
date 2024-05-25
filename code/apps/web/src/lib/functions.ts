@@ -41,10 +41,7 @@ export const loadDegreeStore = async (uid:string) => {
 
   // eslint-disable-next-line
   let validatedUserDegrees = userRegisteredDegreesSnap.docs.map((degree) => {
-    const degreedata = degree.data();
-    degreedata.enrollmentDate = degreedata.enrollmentDate.toDate();
-    degreedata.expectedGraduationDate = degreedata.expectedGraduationDate.toDate();
-    return registeredDegreeValidator.parse(degreedata)
+    return registeredDegreeValidator.parse(degree.data())
 });
 
   userDegrees.set(validatedUserDegrees);

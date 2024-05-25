@@ -1,13 +1,10 @@
 <script lang="ts">
-  import type { UserRegisteredModule,UniversityModule } from "@cos720project/shared";
-  import {createRender, createTable,Render, Subscribe}  from "svelte-headless-table";
-  import { readable, type Readable } from "svelte/store";
+  import type { UserRegisteredModule } from "@cos720project/shared";
   import * as Table from "$lib/components/ui/table";
-	import { DeleteIcon } from "lucide-svelte";
   import { Button } from "$lib/components/ui/button/index";
 
   export let data: UserRegisteredModule[] = [];
-  export let callback:(index:number) => void;
+  export let callback:(moduleId:string) => void;
 
 </script>
 
@@ -23,7 +20,6 @@
     </Table.Row>
   </Table.Header>
   <Table.Body>
-    {#key data}
     {#each data as module, index}
     <Table.Row>
       <Table.Cell>{module.module?.name}</Table.Cell>
@@ -32,13 +28,12 @@
       <Table.Cell>{module.status}</Table.Cell>
       <Table.Cell>
         {#if module.status = "enrolled"}
-          <Button variant="destructive" on:click={() => {callback(index)}}>Deregister</Button>
+          <Button variant="destructive" on:click={() => {callback(module.moduleId)}}>Deregister</Button>
         {:else}
           <Button variant="default" disabled>Registration Ended</Button>
         {/if}
       </Table.Cell>
     </Table.Row>
     {/each}
-    {/key}
   </Table.Body>
 </Table.Root>

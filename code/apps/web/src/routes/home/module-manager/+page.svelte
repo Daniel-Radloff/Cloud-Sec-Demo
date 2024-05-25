@@ -65,7 +65,6 @@
     return [coreModules,electiveModules].flat()
   }
 
-  const degregister = (index:number) =>{};
   // TODO: If 0 degrees registered then message
   onMount(async () => {
     // await stores and load stuff
@@ -79,6 +78,22 @@
       isLoading = false;
     }
   })
+
+  const deregisterModule = async (moduleId:string) =>{
+    const functions = getFirebaseFunctionsClient();
+    const deregisterModule = httpsCallable(functions, functionNames.userDegreeFunctions.deregisterModule);
+    userDegrees.update((current) => {
+      current[degreeIndex].enrolledModules = 
+        current[degreeIndex].enrolledModules.filter((userModule) => userModule.moduleId != moduleId)
+      return current;
+    });
+    const functionData = {
+      userDegreeId : $userDegrees[degreeIndex].id!,
+      moduleId : moduleId,
+    };
+    await deregisterModule(functionData)
+    toast("Module Successfully Deregistered!");
+  };
 
   const registerModule = async (module:UniversityModule) => {
     const functions = getFirebaseFunctionsClient();
@@ -122,7 +137,7 @@
   </Tabs.List>
   {#each $userDegrees as degree, count }
     <Tabs.Content value={count.toString()}>
-      <ModuleManagerTable data={degree.enrolledModules} callback={degregister}/>
+      <ModuleManagerTable data={degree.enrolledModules} callback={deregisterModule}/>
     </Tabs.Content>
   {/each}
 </Tabs.Root>
