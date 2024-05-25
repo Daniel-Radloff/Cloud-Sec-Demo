@@ -50,6 +50,7 @@
       oauthTokenInput.value = token;
       oauthTokenForm.submit();
     } catch(error) {
+        console.log(error);
         toast("Oops, please sign in with a UP account");
     }
   };
