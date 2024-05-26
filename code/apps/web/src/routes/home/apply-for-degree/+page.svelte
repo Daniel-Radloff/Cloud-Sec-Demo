@@ -12,10 +12,11 @@
   import { httpsCallable, type HttpsCallableResult } from "firebase/functions";
   import { functionNames } from "$lib/app-constants";
   import { stripObject } from "$lib/functions";
-	import { userAuthInfo } from "../../../stores";
+	import { userAuthInfo, userDegrees } from "../../../stores";
 	import { FirebaseError } from "firebase/app";
 
   let searchWord = writable("");
+  let block = false;
   // grouped by faculty
   type Dictionary = {[key:string]: UniversityDegree[]};
   let degrees:UniversityDegree[][] = [];
@@ -47,14 +48,29 @@
       status : "active",
       userId : $userAuthInfo!.uid,
     };
+    const userRegistrationCopy = {...userRegistration};
+    userRegistrationCopy.degree = degree;
     const registerDegree = httpsCallable(functions, functionNames.userDegreeFunctions.registerDegree);
     try {
+      if (block) {
+        toast("Slow down there cowboy");
+        return;
+      }
+      block = true;
       await registerDegree(stripObject(userRegistration));
       toast("Degree Registration Success! You can fill out your module registration in the module manager")
+      userDegrees.update((og) => {
+        og.push(userRegistrationCopy)
+        return og;
+      })
+      block = false;
       goto("/home");
     } catch (error) {
       if (error instanceof FirebaseError) {
+        block = false;
         toast(error.message);
+        await setTimeout(()=>{},200)
+        toast("If you have signed in for the first time, please log out and log back in again.");
       }
     }
   };

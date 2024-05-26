@@ -12,13 +12,7 @@
   onMount(async ()=> {
     if ($userMetadata == undefined) {
       // lambda to await store before loading data
-      (async () => {
-        try {
-          isLoading = !(await awaitStore(userMetadata));
-        } catch (error) {
-          console.error(error);
-        }
-      })()
+      userMetadata.subscribe((value) => value ? isLoading = false : isLoading = true);
     } else {
       isLoading = false;
     }
