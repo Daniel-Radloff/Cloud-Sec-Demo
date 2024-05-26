@@ -14,7 +14,7 @@ functions.auth.user().onCreate(async (user) => {
     await getAuth().setCustomUserClaims(user.uid, defaultClaims);
     const metadata = {
       securityInformation: {
-        username: user.displayName,
+        username: user.displayName ?? user.email,
         accountEmail: user.email,
       },
       academicInformationMetaData: {

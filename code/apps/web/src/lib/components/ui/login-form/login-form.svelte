@@ -58,13 +58,15 @@
   };
 
   const form = superForm(data, {
+    dataType: 'json',
+    resetForm : false,
     validators : zodClient(loginFormSchema),
     async onResult({result}) {
       if (result.type != "success") {
         toast("You have errors in your form!");
         return;
       }
-      handleUsernameOrEmail();
+      await handleUsernameOrEmail();
     },
   });
   const { form: loginFormData, enhance, errors} = form;

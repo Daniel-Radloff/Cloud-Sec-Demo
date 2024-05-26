@@ -45,13 +45,15 @@
 
 
   const form = superForm(data, {
+    dataType: 'json',
     validators : zodClient(registerFormSchema),
     async onResult({result}) {
       if (result.type != "success") {
         toast("You have errors in your form!");
         return;
       }
-      handleUsernameOrEmail();
+      await handleUsernameOrEmail();
+      goto("/");
     },
   });
   const { form: loginFormData, enhance, errors} = form;
