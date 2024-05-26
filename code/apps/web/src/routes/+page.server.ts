@@ -12,7 +12,6 @@ export const load = (async () => {
 export const actions = {
     default: async ({request, cookies}) => {
         const token = (await request.formData()).get("token");
-        console.log(token);
         if (!token || typeof token !== "string") {
             throw redirect(303, "/")
         }
@@ -22,15 +21,16 @@ export const actions = {
         try {
             sessionCookie = await getFirebaseAdminAuth()
                 .createSessionCookie(token, {expiresIn:ttl});
+            console.log("this must be in the logs else its bad");
         } catch (error) {
             console.error(error);
             throw redirect(303, "/");
         }
         cookies.set("session", sessionCookie, {
             secure:true,
-            maxAge: ttl/1000,
             path: "/",
-            sameSite:"lax"
+            sameSite:"none",
+            httpOnly : true
         })
         throw redirect(303,"/")
     }

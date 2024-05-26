@@ -5,11 +5,15 @@ import { sequence } from "@sveltejs/kit/hooks";
 
 const authGuard: Handle = async ({event, resolve}) => {
   const firebaseSessionCookie = event.cookies.get("session");
+  event.request.credentials
   try {
+    console.log("cookie is: " + firebaseSessionCookie);
     const token:DecodedIdToken = await getFirebaseAdminAuth()
       .verifySessionCookie(firebaseSessionCookie!);
     event.locals.firebaseAuthToken = token;
+    console.log("token is: " + token)
   } catch (error) {
+    console.error(error);
     event.locals.firebaseAuthToken = undefined;
   }
   return resolve(event);

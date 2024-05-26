@@ -1,6 +1,5 @@
 import {
   initializeApp,
-  type FirebaseOptions,
   type FirebaseApp
 } from "firebase/app";
 import {connectAuthEmulator, getAuth, type Auth} from "firebase/auth";
@@ -8,14 +7,14 @@ import {getAnalytics, type Analytics} from "firebase/analytics"
 import {connectFunctionsEmulator, getFunctions, type Functions} from "firebase/functions";
 import {connectFirestoreEmulator, getFirestore, type Firestore} from "firebase/firestore";
 
-const config: FirebaseOptions = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+const config = {
+  apiKey: "AIzaSyDmFzS56wtmM7e7V2AQh7Rvk_VHEsqL2dg",
+  authDomain: "cos720-4f6dc.firebaseapp.com",
   projectId: "cos720-4f6dc",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  storageBucket: "cos720-4f6dc.appspot.com",
+  messagingSenderId: "1020977349995",
+  appId: "1:1020977349995:web:f8e7cb62c27eb288eab82e",
+  measurementId: "G-WYHVJPDPSJ"
 };
 
 let firebaseAuth:Auth;
