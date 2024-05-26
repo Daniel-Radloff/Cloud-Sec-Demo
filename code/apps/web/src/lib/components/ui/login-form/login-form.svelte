@@ -12,6 +12,7 @@
   import {GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup} from "firebase/auth";
   import { getFirebaseAuthClient } from '$lib/firebase/firebase.app';
 	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
 
   export let data: SuperValidated<Infer<LoginFormSchema>>;
   let oauthTokenForm: HTMLFormElement;
@@ -31,8 +32,8 @@
       email = $loginFormData.username
     }
     try {
-      const token = await (await signInWithEmailAndPassword(auth,email,$loginFormData.password)).user.getIdToken();
-      oauthTokenInput.value = token;
+      await signInWithEmailAndPassword(auth,email,$loginFormData.password)
+      goto("/home");
     } catch (error) {
       console.log(error);
       return error;
@@ -45,9 +46,7 @@
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth,provider);
-      console.log(result);
-      const token = await result.user.getIdToken();
-      oauthTokenInput.value = token;
+      goto("/home");
     } catch(error) {
         console.log(error);
         toast("Oops, please sign in with a UP account");

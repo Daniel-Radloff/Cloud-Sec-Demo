@@ -13,7 +13,7 @@ type AdminDocument = {
 
 
 export const adminUserCollectionUpdateHook =
-  onDocumentCreated((Collections.adminUsers+"/{humanId}"), async (event) => {
+  onDocumentCreated((Collections.adminUsers), async (event) => {
     const db = getFirestore();
     // cast unknown, check fields, recast.
     let newAdmin: AdminDocument;

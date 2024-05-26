@@ -4,7 +4,7 @@ import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {validateUserClaim} from "../helpers/validate-claim";
 
 
-export const createDegreeRegistration = onCall(async (request) => {
+export const createDegreeRegistration = onCall({cors : true},async (request) => {
   validateUserClaim(request.auth);
   try {
     const validatedUserDegree = userDegreeValidator.parse(request.data);
@@ -53,7 +53,7 @@ export const createDegreeRegistration = onCall(async (request) => {
 });
 
 
-export const registerModule = onCall(async (request) => {
+export const registerModule = onCall({cors : true},async (request) => {
   validateUserClaim(request.auth);
   try {
     const validatedRequest = userModuleFunctionDatatype.parse(request.data);
@@ -115,7 +115,7 @@ export const registerModule = onCall(async (request) => {
   }
 });
 
-export const deregisterModule = onCall(async (request) => {
+export const deregisterModule = onCall({cors : true},async (request) => {
   validateUserClaim(request.auth);
 
   const parsedRequest = userModuleFunctionDatatype.parse(request.data);

@@ -4,7 +4,7 @@ import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {validateAdminClaim} from "../helpers/validate-claim";
 
 
-export const addModule = onCall((request) => {
+export const addModule = onCall({cors : true},(request) => {
   validateAdminClaim(request.auth);
   try {
     const validatedModule = moduleValidator.parse(request.data);
@@ -19,7 +19,7 @@ export const addModule = onCall((request) => {
   }
 });
 
-export const updateModulePrerequisites = onCall((request) => {
+export const updateModulePrerequisites = onCall({cors : true},(request) => {
   validateAdminClaim(request.auth);
   const validatedModule = moduleValidator.parse(request.data);
   const db = getFirestore();
@@ -42,7 +42,7 @@ export const updateModuleDisplayInformation = onCall((request) => {
   validateAdminClaim(request.auth);
 });
 
-export const discontinueModule = onCall((request) => {
+export const discontinueModule = onCall({cors : true},(request) => {
   validateAdminClaim(request.auth);
   const validatedModule = moduleValidator.parse(request.data);
   const db = getFirestore();

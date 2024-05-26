@@ -18,8 +18,9 @@ import * as userDegreeHooks from "./user-degree-hooks/user-degree-hooks";
 
 initializeApp();
 
+
 export {
-  //adminUserHooks,
+  adminUserHooks,
   metadataHooks,
   moduleHooks,
   moduleFunctions,

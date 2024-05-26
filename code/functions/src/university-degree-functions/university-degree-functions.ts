@@ -4,7 +4,7 @@ import {HttpsError, onCall} from "firebase-functions/v2/https";
 import {validateAdminClaim} from "../helpers/validate-claim";
 
 
-export const addNewDegree = onCall((request) => {
+export const addNewDegree = onCall({cors : true},(request) => {
   // validation
   validateAdminClaim(request.auth);
   try {
@@ -22,7 +22,7 @@ export const addNewDegree = onCall((request) => {
   }
 });
 
-export const modifyDegree = onCall((request) => {
+export const modifyDegree = onCall({cors : true},(request) => {
   validateAdminClaim(request.auth);
   const validatedDegree = universityDegreeValidator.parse(request.data);
   const validDegreeObject = {...validatedDegree as any};
