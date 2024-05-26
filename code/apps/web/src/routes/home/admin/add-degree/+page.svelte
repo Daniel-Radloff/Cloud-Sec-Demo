@@ -16,20 +16,31 @@
 	import { httpsCallable } from "firebase/functions";
 	import { functionNames } from "$lib/app-constants";
 	import { stripObject } from "$lib/functions";
+	import { toast } from "svelte-sonner";
  
   export let data: PageData;
   let open = false;
   let degreeLenths = [3,4,5,6,7]
+  let postingLock = false;
 
   const form = superForm(data.form, {
     validators: zodClient(universityDegree),
     resetForm : false,
-    onResult({result}) {
-      if (result.type != "success") return;
+    async onResult({result}) {
+      if (result.type != "success") {
+        toast("You have errors in your form!");
+        postingLock = false;
+        return;
+      }
       const functions = getFirebaseFunctionsClient();
       const addDegree = httpsCallable(functions, functionNames.universityDegreeFunctions.addDegree);
-      addDegree(stripObject($formData));
+      await addDegree(stripObject($formData));
+      toast("Degree Added!")
+      postingLock = false;
     },
+    onSubmit() {
+      postingLock = true;
+    }
   });
  
   const { form: formData, enhance } = form;
@@ -47,7 +58,7 @@
   <Form.Field {form} name="name">
     <Form.Control let:attrs>
       <Form.Label>Degree Name</Form.Label>
-      <Input {...attrs} bind:value={$formData.name} />
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.name} />
     </Form.Control>
     <Form.Description>The full name of the degree</Form.Description>
     <Form.FieldErrors />
@@ -55,7 +66,7 @@
   <Form.Field {form} name="code">
     <Form.Control let:attrs>
       <Form.Label>Degree Code</Form.Label>
-      <Input {...attrs} bind:value={$formData.code} />
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.code} />
     </Form.Control>
     <Form.Description>Shorthand code that identifies the degree. Eg. BScCS</Form.Description>
     <Form.FieldErrors />
@@ -63,7 +74,7 @@
   <Form.Field {form} name="department">
     <Form.Control let:attrs>
       <Form.Label>Department</Form.Label>
-      <Input {...attrs} bind:value={$formData.department} />
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.department} />
     </Form.Control>
     <Form.Description>Department in charge of management of module</Form.Description>
     <Form.FieldErrors />
@@ -94,6 +105,10 @@
               <Command.Item
                 value={degreeDuration.toString()}
                 onSelect={() => {
+                  if (postingLock) {
+                    toast("Waiting for your previous updates to apply")
+                    return;
+                  }
                   $formData.duration = degreeDuration;
                   closeAndFocusTrigger(ids.trigger);
                 }}
@@ -118,6 +133,7 @@
     <Form.Control let:attrs>
       <Form.Label>Description</Form.Label>
       <Textarea
+        disabled={postingLock} 
         {...attrs}
         placeholder="Description of the degree"
         class="resize-none"
@@ -129,7 +145,7 @@
   <Form.Field {form} name="minCreditsPerSemester">
     <Form.Control let:attrs>
       <Form.Label>Minimum credit requirement per semester</Form.Label>
-      <Input {...attrs} bind:value={$formData.minCreditsPerSemester} type="number"/>
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.minCreditsPerSemester} type="number"/>
     </Form.Control>
     <Form.Description>Minimum amount of credits required to be taken per semester</Form.Description>
     <Form.FieldErrors />
@@ -137,7 +153,7 @@
   <Form.Field {form} name="minCredits">
     <Form.Control let:attrs>
       <Form.Label>Degree minimum credit requirement</Form.Label>
-      <Input {...attrs} bind:value={$formData.minCredits} type="number"/>
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.minCredits} type="number"/>
     </Form.Control>
     <Form.Description>Minimum amount of credits required to complete the degree</Form.Description>
     <Form.FieldErrors />

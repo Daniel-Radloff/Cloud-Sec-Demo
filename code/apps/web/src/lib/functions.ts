@@ -38,7 +38,7 @@ export const loadDegreeStore = async (uid:string) => {
   // eslint-disable-next-line
   let validatedUserDegrees = userRegisteredDegreesSnap.docs.map((degree) => {
     return registeredDegreeValidator.parse(degree.data())
-});
+  });
 
   validatedUserDegrees != undefined ? userDegrees.set(validatedUserDegrees) : userDegrees.set([]);
 

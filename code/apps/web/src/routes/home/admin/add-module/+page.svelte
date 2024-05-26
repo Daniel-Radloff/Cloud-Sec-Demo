@@ -16,21 +16,32 @@
 	import { httpsCallable } from "firebase/functions";
 	import { functionNames } from "$lib/app-constants";
 	import { stripObject } from "$lib/functions";
+	import { toast } from "svelte-sonner";
  
   export let data: PageData;
   let openSemesterDialog = false;
   let openTermDialog = false;
   let semesters = [1,2];
   let terms = [undefined,1,2,3,4];
+  let postingLock = false;
   const form = superForm(data.form, {
     validators: zodClient(universityModule),
     resetForm : false,
-    onResult({result}) {
-      if (result.type != "success") return;
+    async onResult({result}) {
+      if (result.type != "success") {
+        toast("You have errors in your form!");
+        postingLock = false;
+        return;
+      }
       const functions = getFirebaseFunctionsClient();
       const addModule = httpsCallable(functions, functionNames.moduleFunctions.addModule);
-      addModule(stripObject($formData));
+      await addModule(stripObject($formData));
+      toast("Module Added!")
+      postingLock = false;
     },
+    onSubmit() {
+      postingLock = true;
+    }
   });
 
   const { form: formData, enhance } = form;
@@ -48,7 +59,7 @@
   <Form.Field {form} name="name">
     <Form.Control let:attrs>
       <Form.Label>Module Name</Form.Label>
-      <Input {...attrs} bind:value={$formData.name} />
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.name} />
     </Form.Control>
     <Form.Description>The full name of the module</Form.Description>
     <Form.FieldErrors />
@@ -56,7 +67,7 @@
   <Form.Field {form} name="code">
     <Form.Control let:attrs>
       <Form.Label>Module Code</Form.Label>
-      <Input {...attrs} bind:value={$formData.code} />
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.code} />
     </Form.Control>
     <Form.Description>Shorthand code that identifies the module. Eg. COS132</Form.Description>
     <Form.FieldErrors />
@@ -64,7 +75,7 @@
   <Form.Field {form} name="department">
     <Form.Control let:attrs>
       <Form.Label>Department</Form.Label>
-      <Input {...attrs} bind:value={$formData.department} />
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.department} />
     </Form.Control>
     <Form.Description>Department in charge of management of the module</Form.Description>
     <Form.FieldErrors />
@@ -94,6 +105,10 @@
               <Command.Item
                 value={semester.toString()}
                 onSelect={() => {
+                  if (postingLock) {
+                    toast("Waiting for your previous updates to apply")
+                    return;
+                  }
                   $formData.semester = semester;
                   closeAndFocusTrigger(ids.trigger);
                 }}
@@ -141,6 +156,10 @@
               <Command.Item
                 value={term ? term.toString() : undefined}
                 onSelect={() => {
+                  if (postingLock) {
+                    toast("Waiting for your previous updates to apply")
+                    return;
+                  }
                   $formData.term = term;
                   closeAndFocusTrigger(ids.trigger);
                 }}
@@ -165,6 +184,7 @@
     <Form.Control let:attrs>
       <Form.Label>Description</Form.Label>
       <Textarea
+        disabled={postingLock}
         {...attrs}
         placeholder="Description of the module"
         class="resize-none"
@@ -176,7 +196,7 @@
   <Form.Field {form} name="cost">
     <Form.Control let:attrs>
       <Form.Label>Cost of the module</Form.Label>
-      <Input {...attrs} bind:value={$formData.cost} type="number"/>
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.cost} type="number"/>
     </Form.Control>
     <Form.Description>How much the module costs</Form.Description>
     <Form.FieldErrors />
@@ -184,7 +204,7 @@
   <Form.Field {form} name="credits">
     <Form.Control let:attrs>
       <Form.Label>Module total credits</Form.Label>
-      <Input {...attrs} bind:value={$formData.credits} type="number"/>
+      <Input disabled={postingLock} {...attrs} bind:value={$formData.credits} type="number"/>
     </Form.Control>
     <Form.Description>Amount of credits that the module provides</Form.Description>
     <Form.FieldErrors />

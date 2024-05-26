@@ -70,17 +70,19 @@
   onMount(async () => {
     // await stores and load stuff
     await awaitStore(userAuthInfo);
-    loadDegreeStore($userAuthInfo!.uid);
     if ($userDegrees.length == 0) {
-      (async () => {
+      loadDegreeStore($userAuthInfo!.uid);
+      await (async () => {
         isLoading = !(await awaitStore(userDegrees))
       })()
+      setTimeout(() => {
+        if ($userDegrees.length == 0) {
+          toast("You need to register for a degree before you can select your modules. Lets help you out :)");
+          goto('/home/apply-for-degree');
+        }
+      },1000)
     } else {
       isLoading = false;
-    }
-    if ($userDegrees.length == 0) {
-      toast("You need to register for a degree before you can select your modules. Lets help you out :)");
-      goto('/home/apply-for-degree');
     }
   })
 

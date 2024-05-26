@@ -22,6 +22,7 @@
   import { goto } from "$app/navigation";
   import AdminModuleTable from "$lib/components/ui/admin-module-table/admin-module-table.svelte";
   import { Switch } from "$lib/components/ui/switch";
+	import { toast } from "svelte-sonner";
  
   export let data: PageData;
   type Dictionary = {[key:string]: UniversityModule[]};
@@ -33,6 +34,7 @@
   let durationPopup = false;
   let coreModulePopup = false;
   let electiveModulePopup = false;
+  let postingLock = false;
 
 
   onMount(async () => {
@@ -75,12 +77,21 @@
   const form = superForm(data.form, {
     validators: zodClient(universityDegree),
     resetForm : false,
-    onResult({result}) {
-      if (result.type != "success") return;
+    async onResult({result}) {
+      if (result.type != "success") {
+        postingLock = false;
+        toast("You have errors in your form!")
+        return;
+      }
       const functions = getFirebaseFunctionsClient();
       const addDegree = httpsCallable(functions, functionNames.universityDegreeFunctions.modifyDegree);
-      addDegree(stripObject($formData));
+      await addDegree(stripObject($formData));
+      toast("Degree Updated!")
+      postingLock = false;
     },
+    onSubmit() {
+      postingLock = true;
+    }
   });
 
   const { form: formData, enhance } = form;
@@ -96,6 +107,10 @@
 
   // button callbacks
   const coreModuleCallback = (id:string) => {
+    if (postingLock) {
+      toast("Waiting for your last operation to commit...")
+      return;
+    }
     const updatedCoreModules = $degree.coreModules.filter(moduleId => moduleId != id);
     const updatedCoreModuleObjects = $degree.coreModuleObjects?.filter(module => module.id != id);
     degree.update((current) => {
@@ -106,6 +121,10 @@
   }
 
   const electiveModuleCallback = (id:string) => {
+    if (postingLock) {
+      toast("Waiting for your last operation to commit...")
+      return;
+    }
     const updatedElectiveModules = $degree.electiveModules.filter(moduleId => moduleId != id);
     const updatedElectiveModuleObjects = $degree.electiveModuleObjects?.filter(module => module.id != id);
     degree.update((current) => {
@@ -123,6 +142,7 @@
     <Form.Control let:attrs>
       <Form.Label>Description</Form.Label>
       <Textarea
+        disabled={postingLock}
         {...attrs}
         placeholder="Description of the module"
         class="resize-none"
@@ -157,6 +177,10 @@
               <Command.Item
                 value={degreeDuration.toString()}
                 onSelect={() => {
+                    if (postingLock) {
+                      toast("Waiting for your last operation to commit...")
+                      return;
+                    }
                   $degree.duration = degreeDuration;
                   closeAndFocusTrigger(ids.trigger);
                 }}
@@ -213,6 +237,14 @@
                 value={module.id}
                 onSelect={() => {
                   degree.update((currentValue) => {
+                    if (currentValue.coreModules?.includes(module.id ?? "")) {
+                      toast("(" + module.code + ") " + module.name + " is already a core module")
+                      return currentValue
+                    }
+                    if (postingLock) {
+                      toast("Waiting for your last operation to commit...")
+                      return currentValue
+                    }
                     currentValue.coreModuleObjects?.push(module);
                     // braindeath cast but the thing eslint is being weird
                     currentValue.coreModules.push(module.id ?? "");
@@ -270,6 +302,14 @@
                 value={module.id}
                 onSelect={() => {
                   degree.update((currentValue) => {
+                    if (currentValue.electiveModules.includes(module.id ?? "")) {
+                      toast("(" + module.code + ") " + module.name + " is already a elective module")
+                      return currentValue
+                    };
+                    if (postingLock) {
+                      toast("Waiting for your last operation to commit...")
+                      return currentValue
+                    }
                     currentValue.electiveModuleObjects?.push(module);
                     // braindeath cast but the thing eslint is being weird
                     currentValue.electiveModules.push(module.id ?? "");
@@ -294,7 +334,7 @@
   <Form.Field {form} name="minCreditsPerSemester">
     <Form.Control let:attrs>
       <Form.Label>Minimum credit requirement per semester</Form.Label>
-      <Input {...attrs} bind:value={$degree.minCreditsPerSemester} type="number"/>
+      <Input disabled={postingLock} {...attrs} bind:value={$degree.minCreditsPerSemester} type="number"/>
     </Form.Control>
     <Form.Description>Minimum amount of credits required to be taken per semester</Form.Description>
     <Form.FieldErrors />
@@ -302,7 +342,7 @@
   <Form.Field {form} name="minCredits">
     <Form.Control let:attrs>
       <Form.Label>Degree minimum credit requirement</Form.Label>
-      <Input {...attrs} bind:value={$degree.minCredits} type="number"/>
+      <Input disabled={postingLock} {...attrs} bind:value={$degree.minCredits} type="number"/>
     </Form.Control>
     <Form.Description>Minimum amount of credits required to complete the degree</Form.Description>
     <Form.FieldErrors />
@@ -316,6 +356,7 @@
         </Form.Description>
       </div>
       <Switch
+        disabled={postingLock}
         includeInput
         {...attrs}
         bind:checked={$degree.discontinued}
@@ -347,6 +388,6 @@
     <input type="hidden" value={$degree.department} name={attrs.name}/>
     </Form.Control>
   </Form.Field>
-  <Form.Button>Register New Module</Form.Button>
+  <Form.Button disabled={postingLock}>Update Degree</Form.Button>
 </form>
 </div>
