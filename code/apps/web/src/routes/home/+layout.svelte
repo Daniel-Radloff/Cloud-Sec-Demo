@@ -5,6 +5,7 @@
 	import Button from "$lib/components/ui/button/button.svelte";
 	import { getFirebaseAuthClient } from "$lib/firebase/firebase.app";
 	import { goto } from "$app/navigation";
+	import { userAuthInfo } from "../../stores";
 
   type Crumb = {
     label : string,
@@ -14,6 +15,7 @@
   let crumbs: Crumb[] = [];
   let serviceUrls:string[] = [];
   let serviceNames:string[] = [];
+  let admin = false;
 
   page.subscribe(($page) => {
     const pageInfo = Object.entries(paths)
@@ -59,6 +61,10 @@
     },300)
   }
 
+  userAuthInfo.subscribe(async (value) => {
+    if ((await value?.getIdTokenResult())?.claims.admin === true)  admin = true;
+  })
+
 </script>
 
 <header class="sticky top-0 z-50 w-full bg-background border-b">
@@ -86,6 +92,9 @@
       {#each serviceUrls as _, count}
       <a href={serviceUrls[count]}>{serviceNames[count]}</a>
       {/each}
+      {#if admin}
+        <a href="/home/admin">Admin Home</a>
+      {/if}
       <Button variant="ghost" on:click={logout}>Logout</Button>
     </nav>
   </div>
