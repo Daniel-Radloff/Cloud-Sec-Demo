@@ -3,10 +3,14 @@
   import { getFirebaseAuthClient, getFirebaseFirestoreClient } from "$lib/firebase/firebase.app";
   import { onAuthStateChanged } from "firebase/auth";
 	import { userAuthInfo, userDegrees, userMetadata } from "../stores";
+  import {browser} from "$app/environment";
 	import { onDestroy, onMount } from "svelte";
   import { Collections, userMetadata as userMetadataValidate } from '@cos720project/shared';
 	import { doc, getDoc } from "firebase/firestore";
 	import { Toaster } from "svelte-sonner";
+	import { page } from "$app/stores";
+	import { redirect } from "@sveltejs/kit";
+	import { goto } from "$app/navigation";
 
   onMount(() => {
     const auth = getFirebaseAuthClient();
@@ -42,6 +46,34 @@
       }
     })
   })
+  let debounce:NodeJS.Timeout;
+  userAuthInfo.subscribe((userAuth) => {
+    if (!browser) return
+    clearTimeout(debounce);
+    debounce = setTimeout(async ()=>{
+      const token = await userAuth?.getIdTokenResult();
+      if (token === undefined) {
+        goto("/");
+        return;
+      }
+      if ($page.url.pathname.startsWith("/home/admin")) {
+        if (token?.claims.admin !== true) {
+          goto("/home");
+          return;
+        };
+      }
+      if ($page.url.pathname == "/") {
+        if (token?.claims.admin === true) {
+          goto("/home/admin");
+          return;
+        }
+        if (token?.claims.user === true) {
+          goto("/home");
+          return;
+        }
+      }
+    },300);
+  });
 </script>
 <Toaster/>
 <slot />

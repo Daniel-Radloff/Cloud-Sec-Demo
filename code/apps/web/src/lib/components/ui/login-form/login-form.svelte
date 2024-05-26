@@ -33,7 +33,6 @@
     try {
       const token = await (await signInWithEmailAndPassword(auth,email,$loginFormData.password)).user.getIdToken();
       oauthTokenInput.value = token;
-      oauthTokenForm.submit();
     } catch (error) {
       console.log(error);
       return error;
@@ -49,7 +48,6 @@
       console.log(result);
       const token = await result.user.getIdToken();
       oauthTokenInput.value = token;
-      oauthTokenForm.submit();
     } catch(error) {
         console.log(error);
         toast("Oops, please sign in with a UP account");
