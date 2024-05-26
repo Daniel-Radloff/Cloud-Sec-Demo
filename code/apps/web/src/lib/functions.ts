@@ -13,11 +13,7 @@ export const awaitStore = async (store:Writable<unknown|undefined>|Readable<unkn
   const maxRetry = 50;
   while (!isLoaded && timeout < maxRetry) {
     const storeValue = get(store);
-    if (Array.isArray(storeValue)) {
-      if ((storeValue as Array<unknown>).length != 0) isLoaded = true;
-    } else if (storeValue != undefined) {
-      isLoaded = true;
-    }
+    if (storeValue != undefined) isLoaded = true;
     await new Promise((resolve) => setTimeout(resolve,200));
     timeout = timeout + 1;
   }
@@ -44,7 +40,7 @@ export const loadDegreeStore = async (uid:string) => {
     return registeredDegreeValidator.parse(degree.data())
 });
 
-  userDegrees.set(validatedUserDegrees);
+  validatedUserDegrees != undefined ? userDegrees.set(validatedUserDegrees) : userDegrees.set([]);
 
   // populate degree details for each degree
   const degreePromises = validatedUserDegrees.map(async (degree, index) => {

@@ -16,6 +16,7 @@
 	import { functionNames } from '$lib/app-constants';
 	import { toast } from 'svelte-sonner';
   import {derived} from 'svelte/store';
+  import {goto } from '$app/navigation';
   
   //export let data: PageData;
   let isLoading = true;
@@ -76,6 +77,10 @@
       })()
     } else {
       isLoading = false;
+    }
+    if ($userDegrees.length == 0) {
+      toast("You need to register for a degree before you can select your modules. Lets help you out :)");
+      goto('/home/apply-for-degree');
     }
   })
 

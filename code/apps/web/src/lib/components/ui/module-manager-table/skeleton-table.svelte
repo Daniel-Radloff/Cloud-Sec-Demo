@@ -14,11 +14,12 @@
 <Table.Root>
   <Table.Header>
       <Table.Row>
-        <Table.Head>Course</Table.Head>
-        <Table.Head>Description</Table.Head>
-        <Table.Head>Status</Table.Head>
-        <Table.Head>Presentation Period</Table.Head>
-        <Table.Head>Registration Date</Table.Head>
+      <Table.Head>Module Name</Table.Head>
+      <Table.Head>Code</Table.Head>
+      <Table.Head>Credits</Table.Head>
+      <Table.Head>Status</Table.Head>
+      <!-- <Table.Head>Prerequisites</Table.Head> -->
+      <Table.Head>Deregister</Table.Head>
       </Table.Row>
   </Table.Header>
   <Table.Body>

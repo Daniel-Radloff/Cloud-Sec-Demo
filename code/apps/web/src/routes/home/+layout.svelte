@@ -14,7 +14,8 @@
   let crumbs: Crumb[] = [];
   let serviceUrls:string[] = [];
   let serviceNames:string[] = [];
-  $: {
+
+  page.subscribe(($page) => {
     const pageInfo = Object.entries(paths)
       .map(([path, pathdata]) => ({...pathdata,}))
       .filter(service => service.name.test($page.url.pathname))
@@ -48,7 +49,8 @@
     $page.route.id?.includes("[slug]") ? 
       crumbs = initialCrumbs.slice(0,-1) : 
       crumbs = initialCrumbs;
-  }
+  });
+
   const logout = () => {
     const auth = getFirebaseAuthClient();
     auth.signOut();

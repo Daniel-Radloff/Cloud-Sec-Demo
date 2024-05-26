@@ -72,7 +72,7 @@
   <Form.Field {form} name="password" class="pb-3">
     <Form.Control let:attrs >
       <Form.Label>Password</Form.Label>
-      <Input {...attrs} bind:value={$loginFormData.password} />
+      <Input type="password" {...attrs} bind:value={$loginFormData.password} />
     </Form.Control>
     <Form.Description>Your Password</Form.Description>
     <Form.FieldErrors />
