@@ -3,19 +3,19 @@
   import {Input} from '$lib/components/ui/input';
   import {Button} from '$lib/components/ui/button';
   import { zodClient } from 'sveltekit-superforms/adapters';
-  import {type LoginFormSchema, loginFormSchema, StudentNumberRegex, StudentCodeRegex} from './schema';
+  import {type RegisterFormSchema, registerFormSchema, StudentNumberRegex, StudentCodeRegex} from './schema';
   import {
     type SuperValidated,
     type Infer,
     superForm,
   } from 'sveltekit-superforms';
-  import {GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, type User} from "firebase/auth";
+  import {GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, type User} from "firebase/auth";
   import { getFirebaseAuthClient } from '$lib/firebase/firebase.app';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 	import type { Writable } from 'svelte/store';
 
-  export let data: SuperValidated<Infer<LoginFormSchema>>;
+  export let data: SuperValidated<Infer<RegisterFormSchema>>;
   export let authstore : Writable<User|undefined>;
   let oauthTokenForm: HTMLFormElement;
   let oauthTokenInput: HTMLInputElement;
@@ -34,31 +34,18 @@
       email = $loginFormData.username
     }
     try {
-      const result = await signInWithEmailAndPassword(auth,email,$loginFormData.password)
+      const result = await createUserWithEmailAndPassword(auth,email,$loginFormData.password)
       authstore.update((old) => result.user);
-      goto("/home");
+      goto("/");
     } catch (error) {
-      toast("We don't know about this account, try registering or using google signing with your UP account instead!");
       console.log(error);
+      return error;
     }
   };
 
-  //restict to UP domains only
-  const handleOAuth = async () => {
-    const auth = getFirebaseAuthClient();
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth,provider);
-      authstore.update((old) => result.user);
-      goto("/home");
-    } catch(error) {
-        console.log(error);
-        toast("Oops, please sign in with a UP account");
-    }
-  };
 
   const form = superForm(data, {
-    validators : zodClient(loginFormSchema),
+    validators : zodClient(registerFormSchema),
     async onResult({result}) {
       if (result.type != "success") {
         toast("You have errors in your form!");
@@ -74,8 +61,24 @@
 <form method="post" use:enhance bind:this={usernamePasswordForm}>
   <Form.Field {form} name="username">
     <Form.Control let:attrs>
-      <Form.Label>Username</Form.Label>
+      <Form.Label>Email or Username</Form.Label>
       <Input {...attrs} bind:value={$loginFormData.username} />
+    </Form.Control>
+    <Form.Description>Student Number, or UP email</Form.Description>
+    <Form.FieldErrors />
+  </Form.Field>
+  <Form.Field {form} name="firstname">
+    <Form.Control let:attrs>
+      <Form.Label>First Name</Form.Label>
+      <Input {...attrs} bind:value={$loginFormData.firstname} />
+    </Form.Control>
+    <Form.Description>Student Number, or UP email</Form.Description>
+    <Form.FieldErrors />
+  </Form.Field>
+  <Form.Field {form} name="lastname" >
+    <Form.Control let:attrs>
+      <Form.Label>Last Name</Form.Label>
+      <Input {...attrs} bind:value={$loginFormData.lastname} />
     </Form.Control>
     <Form.Description>Student Number, or UP email</Form.Description>
     <Form.FieldErrors />
@@ -88,11 +91,14 @@
     <Form.Description>Your Password</Form.Description>
     <Form.FieldErrors />
   </Form.Field>
-  <Form.Button>Login</Form.Button>
-  <Button on:click={() => goto("/register")}>Register Using Email</Button>
-  <Button on:click={handleOAuth}>Login With Google</Button>
-</form>
-<form method="post" bind:this={oauthTokenForm}>
-  <input name="token" type="hidden" bind:this={oauthTokenInput}/>
+  <Form.Field {form} name="confirm" class="pb-3">
+    <Form.Control let:attrs >
+      <Form.Label>Confirm Password</Form.Label>
+      <Input type="password" {...attrs} bind:value={$loginFormData.confirm} />
+    </Form.Control>
+    <Form.Description>Your Password</Form.Description>
+    <Form.FieldErrors />
+  </Form.Field>
+  <Form.Button>Register</Form.Button>
 </form>
 </div>

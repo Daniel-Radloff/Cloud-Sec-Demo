@@ -1,8 +1,7 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
-  import LoginForm from "$lib/components/ui/login-form/login-form.svelte";
-	import { AlignCenterVertical } from "lucide-svelte";
-	import { userAuthInfo } from "../stores";
+  import RegisterForm from "$lib/components/ui/register-form/register-form.svelte";
+	import { userAuthInfo } from "../../stores";
   export let data: PageData;
 </script>
 <section class="flex h-screen w-screen place-content-center place-items-center">
@@ -20,6 +19,7 @@
   </div>
   <div class="flex flex-col max-w-[40%] backdrop-blur-sm p-4 rounded-md">
   <h1 class="text-2xl">Welcome to UP Module Manager</h1>
-  <LoginForm data={data.form} authstore={userAuthInfo} />
+  <span class="text-2xl text-center">Please Enter your details</span>
+  <RegisterForm data={data.form} authstore={userAuthInfo}/>
   </div>
 </section>
